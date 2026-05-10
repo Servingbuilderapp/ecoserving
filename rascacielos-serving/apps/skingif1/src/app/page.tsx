@@ -1,171 +1,337 @@
-import React from 'react'
-import { createClient } from '@/lib/supabase/server'
-import { LandingClient } from '@/components/landing/LandingClient'
+"use client";
 
-import { headers } from 'next/headers'
+import { useState } from "react";
+import Link from "next/link";
+import { Sparkles, ArrowRight, Brain, Target, Users, Globe, Award, Droplets, Leaf } from "lucide-react";
 
-export const dynamic = 'force-dynamic'
-
-export default async function LandingPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  const headersList = await headers()
-  const host = headersList.get('host') || ''
-  const isEcoServing = host.toLowerCase().includes('ecoserving') || host.toLowerCase().includes('localhost')
-
-  // Helper para organizar por temas si la DB no tiene el campo category
-  const getAppCategory = (app: any) => {
-    if (app.category) return app.category;
-    const name = (app.name_es || app.name_en || '').toLowerCase();
-    if (name.includes('video') || name.includes('guion') || name.includes('podcast')) return 'Medios & Eco-Conciencia';
-    if (name.includes('instagram') || name.includes('social') || name.includes('ninja') || name.includes('viral')) return 'Comunidad Verde';
-    if (name.includes('seo') || name.includes('web') || name.includes('optimiza')) return 'SEO Sostenible';
-    if (name.includes('escritor') || name.includes('artículo') || name.includes('pro') || name.includes('texto')) return 'Reportes & Análisis';
-    return 'Impacto General';
-  };
-  
-  // Fetch apps for showcase
-  let { data: allApps } = await supabase
-    .from('micro_apps')
-    .select('*')
-    .limit(20)
-
-  // Fallback si la DB de apps está vacía o falla
-  if (!allApps || allApps.length === 0) {
-    allApps = [
-      { id: '1', slug: 'carbon-footprint', name_es: 'Calculadora Huella Carbono', description_es: 'Mide y compensa emisiones.', icon: 'Calculator', category: 'Herramientas' },
-      { id: '2', slug: 'green-grants', name_es: 'Buscador de Subvenciones', description_es: 'Encuentra fondos verdes disponibles.', icon: 'Search', category: 'Proyectos' },
-      { id: '3', slug: 'eco-newsletter', name_es: 'Generador Eco-Newsletter', description_es: 'Noticias climáticas listas para enviar.', icon: 'Mail', category: 'Productividad' },
-      { id: '4', slug: 'solar-roi', name_es: 'Calculadora ROI Solar', description_es: 'Calcula retorno de paneles solares.', icon: 'Sun', category: 'Herramientas' },
-      { id: '5', slug: 'climate-simulator', name_es: 'Simulador Climático', description_es: 'Visualiza impactos a largo plazo.', icon: 'Globe', category: 'Educación' },
-      { id: '6', slug: 'sustainability-kpis', name_es: 'Dashboard de KPIs', description_es: 'Métricas de sostenibilidad para empresas.', icon: 'PieChart', category: 'Productividad' },
-    ] as any;
+// Massive Dictionary for i18n
+const dictionary = {
+  es: {
+    nav_tech: "Patentes",
+    nav_com: "Métricas",
+    nav_hub: "Entrar al Hub",
+    badge: "K-Beauty Global OS",
+    title_1: "El Legado Riman, Potenciado por ",
+    title_highlight: "Inteligencia Artificial",
+    subtitle: "Únete a la marca #1 de Skincare en Corea. Combina el poder de la Centella Asiática Gigante patentada con un ecosistema SaaS para multiplicar tus ventas globales.",
+    btn_start: "Comenzar Ahora",
+    btn_dash: "Ir a mi Dashboard",
+    stat_sales: "$4 Billones USD",
+    stat_sales_p: "En ventas globales acumuladas sin precedentes.",
+    stat_clients: "40 Millones",
+    stat_clients_p: "De clientes satisfechos, garantizando retención masiva.",
+    stat_patents: "Patentes Únicas",
+    stat_patents_p: "Fórmulas imposibles de replicar en el mercado.",
+    feat1_title: "Centella Asiática Gigante",
+    feat1_desc: "25% más grande y 3 veces más potente en activos puros. Cultivada bajo estrictos estándares científicos. Una patente exclusiva de Riman.",
+    feat2_title: "Agua del Volcán Hallasan",
+    feat2_desc: "Agua de lava volcánica enriquecida naturalmente. Base de hidratación extrema que define nuestro rigor científico y laboratorios propios.",
+    feat3_title: "Rigor y Premios Globales",
+    feat3_desc: "Múltiples galardones internacionales de dermatología y biotecnología. Un producto 100% probado con liderazgo comprobado."
+  },
+  en: {
+    nav_tech: "Patents",
+    nav_com: "Metrics",
+    nav_hub: "Enter Hub",
+    badge: "K-Beauty Global OS",
+    title_1: "The Riman Legacy, Powered by ",
+    title_highlight: "Artificial Intelligence",
+    subtitle: "Join the #1 Skincare brand in Korea. Combine the power of patented Giant Centella Asiatica with a SaaS ecosystem to multiply your global sales.",
+    btn_start: "Start Now",
+    btn_dash: "Go to Dashboard",
+    stat_sales: "$4 Billion USD",
+    stat_sales_p: "In unprecedented cumulative global sales.",
+    stat_clients: "40 Million",
+    stat_clients_p: "Satisfied customers, guaranteeing massive retention.",
+    stat_patents: "Unique Patents",
+    stat_patents_p: "Formulas impossible to replicate in the market.",
+    feat1_title: "Giant Centella Asiatica",
+    feat1_desc: "25% larger and 3 times more potent in pure active ingredients. Cultivated under strict scientific standards. An exclusive Riman patent.",
+    feat2_title: "Hallasan Volcano Water",
+    feat2_desc: "Naturally enriched volcanic lava water. Extreme hydration base that defines our scientific rigor and proprietary laboratories.",
+    feat3_title: "Global Awards & Rigor",
+    feat3_desc: "Multiple international awards in dermatology and biotechnology. A 100% proven product with proven leadership."
+  },
+  ko: {
+    nav_tech: "특허",
+    nav_com: "지표",
+    nav_hub: "허브 입장",
+    badge: "K-뷰티 글로벌 OS",
+    title_1: "리만 레거시, ",
+    title_highlight: "인공 지능으로 구동",
+    subtitle: "한국 스킨케어 1위 브랜드에 합류하세요. 특허 받은 자이언트 병풀의 힘과 SaaS 생태계를 결합하여 글로벌 매출을 배가하십시오.",
+    btn_start: "지금 시작하다",
+    btn_dash: "대시보드로 이동",
+    stat_sales: "40억 달러",
+    stat_sales_p: "전례 없는 누적 글로벌 매출.",
+    stat_clients: "4천만 명",
+    stat_clients_p: "만족한 고객, 대규모 유지 보장.",
+    stat_patents: "독점 특허",
+    stat_patents_p: "시장에서 복제 불가능한 포뮬러.",
+    feat1_title: "자이언트 병풀",
+    feat1_desc: "25% 더 크고 순수 활성 성분이 3배 더 강력합니다. 엄격한 과학적 기준에 따라 재배. 리만의 독점 특허.",
+    feat2_title: "한라산 화산수",
+    feat2_desc: "자연적으로 풍부한 화산 용암수. 리만의 과학적 엄격함과 자체 연구소를 정의하는 극강의 수분 베이스.",
+    feat3_title: "글로벌 어워드",
+    feat3_desc: "피부과학 및 생명공학 분야의 수많은 국제 상. 입증된 리더십이 있는 100% 검증된 제품."
+  },
+  pt: {
+    nav_tech: "Patentes",
+    nav_com: "Métricas",
+    nav_hub: "Entrar no Hub",
+    badge: "K-Beauty Global OS",
+    title_1: "O Legado Riman, Impulsionado por ",
+    title_highlight: "Inteligência Artificial",
+    subtitle: "Junte-se à marca #1 de Skincare na Coreia. Combine o poder da Centella Asiática Gigante patenteada com um ecossistema SaaS para multiplicar suas vendas globais.",
+    btn_start: "Começar Agora",
+    btn_dash: "Ir para o Dashboard",
+    stat_sales: "$4 Bilhões USD",
+    stat_sales_p: "Em vendas globais acumuladas sem precedentes.",
+    stat_clients: "40 Milhões",
+    stat_clients_p: "De clientes satisfeitos, garantindo retenção massiva.",
+    stat_patents: "Patentes Únicas",
+    stat_patents_p: "Fórmulas impossíveis de replicar no mercado.",
+    feat1_title: "Centella Asiática Gigante",
+    feat1_desc: "25% maior e 3 vezes mais potente em ingredientes ativos. Cultivada sob rigorosos padrões científicos. Patente exclusiva da Riman.",
+    feat2_title: "Água do Vulcão Hallasan",
+    feat2_desc: "Água de lava vulcânica naturalmente enriquecida. Base de hidratação extrema que define nosso rigor científico.",
+    feat3_title: "Prêmios Globais",
+    feat3_desc: "Múltiplos prêmios internacionais de dermatologia e biotecnologia. Um produto 100% comprovado."
+  },
+  fr: {
+    nav_tech: "Brevets",
+    nav_com: "Métriques",
+    nav_hub: "Entrer au Hub",
+    badge: "K-Beauty Global OS",
+    title_1: "L'Héritage Riman, Propulsé par ",
+    title_highlight: "L'Intelligence Artificielle",
+    subtitle: "Rejoignez la marque n°1 de soins de la peau en Corée.",
+    btn_start: "Commencer",
+    btn_dash: "Mon Tableau de Bord",
+    stat_sales: "4 Milliards USD",
+    stat_sales_p: "En ventes globales cumulées.",
+    stat_clients: "40 Millions",
+    stat_clients_p: "De clients satisfaits.",
+    stat_patents: "Brevets Uniques",
+    stat_patents_p: "Formules impossibles à reproduire.",
+    feat1_title: "Centella Asiatica Géante",
+    feat1_desc: "Brevet exclusif. 3 fois plus puissant en principes actifs purs.",
+    feat2_title: "Eau du Volcan Hallasan",
+    feat2_desc: "Base d'hydratation extrême, définissant notre rigueur scientifique.",
+    feat3_title: "Prix Internationaux",
+    feat3_desc: "Récompensé mondialement pour son innovation biotechnologique."
+  },
+  de: {
+    nav_tech: "Patente",
+    nav_com: "Metriken",
+    nav_hub: "Zum Hub",
+    badge: "K-Beauty Global OS",
+    title_1: "Das Riman-Erbe, Angetrieben durch ",
+    title_highlight: "Künstliche Intelligenz",
+    subtitle: "Treten Sie der Hautpflegemarke Nr. 1 in Korea bei.",
+    btn_start: "Jetzt Starten",
+    btn_dash: "Zum Dashboard",
+    stat_sales: "4 Milliarden USD",
+    stat_sales_p: "An kumulierten weltweiten Verkäufen.",
+    stat_clients: "40 Millionen",
+    stat_clients_p: "Zufriedene Kunden weltweit.",
+    stat_patents: "Exklusive Patente",
+    stat_patents_p: "Unmögliche Reproduktion auf dem Markt.",
+    feat1_title: "Riesige Centella Asiatica",
+    feat1_desc: "3-mal wirksamer in reinen Wirkstoffen. Ein exklusives Riman-Patent.",
+    feat2_title: "Hallasan-Vulkanwasser",
+    feat2_desc: "Extreme Feuchtigkeitsbasis, die unsere wissenschaftliche Strenge definiert.",
+    feat3_title: "Globale Auszeichnungen",
+    feat3_desc: "Mehrfach international für Biotechnologie ausgezeichnet."
+  },
+  zh: {
+    nav_tech: "专利",
+    nav_com: "指标",
+    nav_hub: "进入枢纽",
+    badge: "K-Beauty Global OS",
+    title_1: "Riman 遗产，",
+    title_highlight: "人工智能驱动",
+    subtitle: "加入韩国第一护肤品牌。将专利巨型积雪草的力量与 SaaS 生态系统相结合。",
+    btn_start: "现在开始",
+    btn_dash: "仪表板",
+    stat_sales: "40 亿美元",
+    stat_sales_p: "空前的累计全球销售额。",
+    stat_clients: "4000 万",
+    stat_clients_p: "满意的客户，保证大规模保留。",
+    stat_patents: "独家专利",
+    stat_patents_p: "市场上无法复制的配方。",
+    feat1_title: "巨型积雪草",
+    feat1_desc: "独家专利，纯活性成分的效力是其 3 倍。",
+    feat2_title: "汉拿山火山水",
+    feat2_desc: "极度补水的基础，定义了我们的科学严谨性。",
+    feat3_title: "全球奖项",
+    feat3_desc: "获得多项生物技术和皮肤病学国际奖项。"
+  },
+  jp: {
+    nav_tech: "特許",
+    nav_com: "メトリクス",
+    nav_hub: "ハブに入る",
+    badge: "K-Beauty Global OS",
+    title_1: "人工知能を搭載した",
+    title_highlight: "Rimanの遺産",
+    subtitle: "韓国No.1スキンケアブランドに参加してください。",
+    btn_start: "今すぐ始める",
+    btn_dash: "ダッシュボード",
+    stat_sales: "40億ドル",
+    stat_sales_p: "前例のない累積グローバル売上高。",
+    stat_clients: "4000万人",
+    stat_clients_p: "満足している顧客。",
+    stat_patents: "独占特許",
+    stat_patents_p: "市場で再現不可能な処方。",
+    feat1_title: "巨大ツボクサ",
+    feat1_desc: "純粋な有効成分で3倍強力。独占特許。",
+    feat2_title: "漢拏山火山水",
+    feat2_desc: "科学的厳密さを定義する究極の保湿ベース。",
+    feat3_title: "グローバルアワード",
+    feat3_desc: "バイオテクノロジーと皮膚科学の国際賞。"
   }
+};
 
-  // 1. Fetch specific Trial Apps requested by user
-  const trialSlugs = isEcoServing 
-    ? ['hogar-sano', 'corp-eco-manager', 'comunidad-circular', 'eco-campus', 'gov-impact-mon']
-    : ['lean-canvas-gen', 'podcast-script-generator', 'product-margin-calc', 'terms-conditions-gen', 'blog-topic-gen'];
-    
-  let { data: trialAppsDb } = await supabase
-    .from('micro_apps')
-    .select('*')
-    .in('slug', trialSlugs)
-    
-  let trialApps = trialAppsDb || [];
+type Language = "es" | "en" | "ko" | "pt" | "fr" | "de" | "zh" | "jp";
 
-  // Fallback just in case they are not in DB yet
-  if (trialApps.length === 0) {
-    const defaultSchema = [{"name": "input", "type": "textarea", "label_es": "Describe tu necesidad", "required": true}];
-    trialApps = isEcoServing ? [
-      { id: 't1', slug: 'hogar-sano', name_es: 'Gestión de Residuos en el Hogar', description_es: 'Plan práctico para reciclar y reducir desechos en casa.', icon: 'Home', category: 'Residuos', form_schema: defaultSchema },
-      { id: 't2', slug: 'corp-eco-manager', name_es: 'Gestión de Residuos en la Empresa', description_es: 'Estrategias corporativas de cero residuos.', icon: 'Briefcase', category: 'Residuos', form_schema: defaultSchema },
-      { id: 't3', slug: 'comunidad-circular', name_es: 'Gestión de Residuos en la Comunidad', description_es: 'Organización vecinal para el manejo de basura.', icon: 'Users', category: 'Residuos', form_schema: defaultSchema },
-      { id: 't4', slug: 'eco-campus', name_es: 'Gestión de Residuos en Colegios', description_es: 'Programas educativos y reciclaje en campus.', icon: 'GraduationCap', category: 'Residuos', form_schema: defaultSchema },
-      { id: 't5', slug: 'gov-impact-mon', name_es: 'Gestión de Residuos para Gobierno', description_es: 'Políticas públicas y manejo municipal.', icon: 'Landmark', category: 'Residuos', form_schema: defaultSchema }
-    ] : [
-      { id: 't1', slug: 'lean-canvas-gen', name_es: 'Lean Canvas', description_es: 'Genera tu modelo de negocio.', icon: 'Briefcase', category: 'Negocios', form_schema: defaultSchema },
-      { id: 't2', slug: 'podcast-script-generator', name_es: 'Guiones de Podcast', description_es: 'Estructura tus episodios.', icon: 'Mic', category: 'Contenido', form_schema: defaultSchema },
-      { id: 't3', slug: 'product-margin-calc', name_es: 'Margen de Producto', description_es: 'Calculadora de costos y ventas.', icon: 'DollarSign', category: 'Finanzas', form_schema: defaultSchema },
-      { id: 't4', slug: 'terms-conditions-gen', name_es: 'Términos y Condiciones', description_es: 'Textos legales para tu web.', icon: 'FileText', category: 'Legal', form_schema: defaultSchema },
-      { id: 't5', slug: 'blog-topic-gen', name_es: 'Temas de Blog', description_es: 'Ideas de artículos.', icon: 'MessageCircle', category: 'Marketing', form_schema: defaultSchema }
-    ] as any;
-  }
-
-  // 2. Hardcode 3 general, easy-to-understand apps for Arsenal
-  const arsenalApps = isEcoServing ? [
-    { id: 'a1', slug: 'carbon-footprint', name_es: 'Calculadora Huella Carbono', description_es: 'Mide y compensa emisiones de forma sencilla.', icon: 'Calculator', category: 'Herramientas' },
-    { id: 'a2', slug: 'eco-newsletter', name_es: 'Generador Eco-Newsletter', description_es: 'Noticias climáticas listas para enviar a tu audiencia.', icon: 'Mail', category: 'Productividad' },
-    { id: 'a3', slug: 'green-grants', name_es: 'Buscador de Subvenciones', description_es: 'Encuentra fondos verdes disponibles para tus proyectos.', icon: 'Search', category: 'Proyectos' }
-  ] : [
-    { id: 'a1', slug: 'buyer-persona-builder', name_es: 'Buyer Persona', description_es: 'Define tu cliente ideal.', icon: 'Users', category: 'Marketing' },
-    { id: 'a2', slug: 'ad-copy-generator', name_es: 'Generador de Ads', description_es: 'Copys persuasivos.', icon: 'Type', category: 'Publicidad' },
-    { id: 'a3', slug: 'roi-calculator', name_es: 'Calculadora ROI', description_es: 'Calcula tu retorno.', icon: 'TrendingUp', category: 'Finanzas' }
-  ]
-
-  // Group arsenal by category
-  const arsenalCategories = arsenalApps.reduce((acc: Record<string, any[]>, app) => {
-    const cat = getAppCategory(app)
-    if (!acc[cat]) acc[cat] = []
-    acc[cat].push(app)
-    return acc
-  }, {})
-
-  // 2. Obtener planes activos de la DB
-  let { data: dbPlans } = await supabase
-    .from('plans')
-    .select('*')
-    .eq('is_active', true)
-    .order('sort_order', { ascending: true })
-
-  // Definición de contenido local (Source of Truth para presentación)
-  const localPlans = [
-    { 
-      slug: 'basic', name_en: 'Eco Seed', name_es: 'Semilla Eco', 
-      description_en: 'Test our interface with limited access.', 
-      description_es: 'Acceso básico para probar 5 herramientas fundamentales.', 
-      price_monthly: 0.00, 
-      items_en: ['5 Pre-assigned Master Apps', 'Basic AI Generation', 'Limited Access'], 
-      items_es: ['5 Apps Maestras Pre-asignadas', 'Familia, Empresas, Comunidad, Colegios, Gobierno', 'Generación Básica con IA'] 
-    },
-    { 
-      slug: 'growth-29', name_en: 'Green Sprout', name_es: 'Brote Verde', 
-      description_en: 'Start your environmental impact with essential tools.', 
-      description_es: 'Inicia tu impacto con 15 herramientas ambientales.', 
-      price_monthly: 29.00, 
-      items_en: ['Everything in Free, PLUS:', '15 Apps in Total', 'Advanced Export Options', 'Standard Priority Support'], 
-      items_es: ['Todo lo del plan Gratuito, MÁS:', '15 Herramientas a tu elección', 'Exportación Avanzada (PDF/Word)', 'Soporte Estándar Prioritario'] 
-    },
-    { 
-      slug: 'growth-49', name_en: 'Eco Catalyst', name_es: 'Catalizador Eco', 
-      description_en: 'Scale your projects with advanced tools.', 
-      description_es: 'Escala tus iniciativas con 30 herramientas avanzadas.', 
-      price_monthly: 49.00, 
-      items_en: ['Everything in Green Sprout, PLUS:', '30 Apps in Total', 'Ultra-fast Generation Speed', 'Priority Support'], 
-      items_es: ['Todo lo del plan anterior, MÁS:', '30 Herramientas Avanzadas a tu elección', 'Velocidad de Generación Ultra-rápida', 'Soporte Prioritario'] 
-    },
-    { 
-      slug: 'growth-97', name_en: 'Sustainable Leader', name_es: 'Líder Sostenible', 
-      description_en: 'Full access to 70 apps.', 
-      description_es: 'Acceso total a 70 apps de impacto ambiental.', 
-      price_monthly: 97.00, 
-      items_en: ['Everything in Eco Catalyst, PLUS:', '70 Apps in Total', 'Includes 15 Project Funding Apps', 'VIP Support'], 
-      items_es: ['Todo lo del plan anterior, MÁS:', '70 Herramientas Desbloqueadas', 'Incluye 15 Apps de Financiamiento y Subvenciones', 'Soporte VIP'] 
-    },
-    { 
-      slug: 'elite', name_en: 'Impact Elite', name_es: 'Élite de Impacto', 
-      description_en: 'The premium experience with unlimited AI Generation.', 
-      description_es: 'La experiencia premium para agencias u ONGs.', 
-      price_monthly: 197.00, 
-      items_en: ['Everything in Sustainable Leader, PLUS:', '80 Apps in Total', 'Unlimited Strategy Generator', 'Dedicated VIP Support', 'Custom Development Requests'], 
-      items_es: ['Todo lo del plan anterior, MÁS:', '80 Herramientas a tu elección', 'Generador de Estrategias y Proyectos IA ILIMITADO', 'Marca Blanca Total (Añade tu Logo)', 'Soporte VIP Dedicado', 'Prioridad en Peticiones de Desarrollo a Medida'] 
-    },
-    { 
-      slug: 'master', name_en: 'Global Vision', name_es: 'Visión Global', 
-      description_en: 'The ultimate powerhouse. Everything unlimited plus custom apps.', 
-      description_es: 'Potencia empresarial. Apps a medida para tu gobierno o multinacional.', 
-      price_monthly: 497.00, 
-      items_en: ['Everything in Impact Elite, PLUS:', '120 Apps (Total Unlimited Access)', 'We build 3 Custom Apps / Month', 'Full White-Label Portal Deployment', 'Exclusive Server', 'Enterprise Support'], 
-      items_es: ['Todo lo del plan Elite, MÁS:', '120 Herramientas (Acceso Total a TODA la Suite)', 'Construimos 3 Apps 100% Personalizadas / Mes', 'Despliegue Completo de Portal Marca Blanca Propio', 'Alojamiento en Servidor Privado Exclusivo', 'Soporte Técnico Empresarial'] 
-    }
-  ];
-
-  const syncPlans = localPlans.map(lp => {
-    const dbPlan = dbPlans?.find(dbp => dbp.slug === lp.slug);
-    return {
-      ...lp,
-      id: dbPlan?.id || `temp-${lp.slug}`,
-      plan_apps: []
-    };
-  });
+export default function RimanLanding() {
+  const [lang, setLang] = useState<Language>("es");
+  const t = dictionary[lang];
 
   return (
-    <LandingClient 
-      user={user}
-      trialApps={trialApps}
-      arsenalCategories={arsenalCategories}
-      syncPlans={syncPlans}
-      isEcoServing={isEcoServing}
-    />
-  )
+    <div className="min-h-screen bg-[#050505] font-sans text-white selection:bg-[#D4AF37] selection:text-black flex flex-col scroll-smooth">
+      {/* HEADER */}
+      <header className="px-6 py-4 flex justify-between items-center border-b border-neutral-800 sticky top-0 bg-[#050505]/80 backdrop-blur-md z-50">
+        <div className="flex items-center gap-2">
+          <Sparkles className="w-6 h-6 text-[#D4AF37]" />
+          <span className="font-extrabold text-xl tracking-widest uppercase">Skingif1</span>
+        </div>
+        
+        <nav className="hidden md:flex gap-6 text-sm font-bold text-neutral-400">
+          <a href="#patents" className="hover:text-white transition-colors">{t.nav_tech}</a>
+          <a href="#metrics" className="hover:text-white transition-colors">{t.nav_com}</a>
+        </nav>
+
+        <div className="flex items-center gap-4">
+          {/* Multi-Language Switcher */}
+          <div className="flex items-center gap-1 bg-[#111] border border-neutral-800 rounded-lg p-1 hover:border-[#D4AF37] transition-colors">
+            <Globe className="w-4 h-4 text-[#D4AF37] ml-2" />
+            <select 
+              value={lang} 
+              onChange={(e) => setLang(e.target.value as Language)}
+              className="bg-transparent text-sm font-bold text-white outline-none cursor-pointer py-1 pr-2 appearance-none"
+            >
+              <option value="es" className="bg-[#111]">ES (Español)</option>
+              <option value="en" className="bg-[#111]">EN (English)</option>
+              <option value="pt" className="bg-[#111]">PT (Português)</option>
+              <option value="ko" className="bg-[#111]">KO (한국어)</option>
+              <option value="zh" className="bg-[#111]">ZH (中文)</option>
+              <option value="jp" className="bg-[#111]">JP (日本語)</option>
+              <option value="fr" className="bg-[#111]">FR (Français)</option>
+              <option value="de" className="bg-[#111]">DE (Deutsch)</option>
+            </select>
+          </div>
+          
+          <Link href="/riman/dashboard" className="text-sm font-bold bg-white text-black px-4 py-2 rounded-lg hover:bg-neutral-200 transition-colors hidden sm:block">
+            {t.nav_hub}
+          </Link>
+        </div>
+      </header>
+
+      {/* HERO */}
+      <main className="flex flex-col items-center justify-center px-4 py-20 md:py-32 text-center relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#D4AF37]/10 via-[#050505]/0 to-[#050505] pointer-events-none" />
+        
+        <div className="z-10 max-w-5xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 text-[#D4AF37] text-xs font-bold uppercase tracking-widest mb-8">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4AF37] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D4AF37]"></span>
+            </span>
+            {t.badge}
+          </div>
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-8 leading-tight">
+            {t.title_1} <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#F3E5AB] block md:inline">{t.title_highlight}</span>
+          </h1>
+          <p className="text-lg md:text-2xl text-neutral-400 mb-12 max-w-3xl mx-auto leading-relaxed">
+            {t.subtitle}
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link 
+              href="/riman/onboarding" 
+              className="bg-gradient-to-r from-[#D4AF37] to-[#F3E5AB] text-black font-extrabold px-8 py-5 rounded-xl shadow-[0_0_40px_rgba(212,175,55,0.3)] hover:scale-105 transition-transform flex items-center justify-center gap-2 text-lg"
+            >
+              {t.btn_start} <ArrowRight className="w-5 h-5" />
+            </Link>
+            <Link 
+              href="/riman/dashboard" 
+              className="bg-[#111] border border-neutral-800 text-white font-bold px-8 py-5 rounded-xl hover:bg-neutral-900 hover:border-neutral-600 transition-colors flex items-center justify-center text-lg"
+            >
+              {t.btn_dash}
+            </Link>
+          </div>
+        </div>
+      </main>
+
+      {/* METRICS SECTION */}
+      <section id="metrics" className="py-20 bg-black border-y border-neutral-900 relative">
+        <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-12 text-center divide-y md:divide-y-0 md:divide-x divide-neutral-800">
+          <div className="p-4">
+            <h3 className="text-5xl font-black text-white mb-2">{t.stat_sales}</h3>
+            <p className="text-neutral-500 font-medium">{t.stat_sales_p}</p>
+          </div>
+          <div className="p-4">
+            <h3 className="text-5xl font-black text-white mb-2">{t.stat_clients}</h3>
+            <p className="text-neutral-500 font-medium">{t.stat_clients_p}</p>
+          </div>
+          <div className="p-4">
+            <h3 className="text-5xl font-black text-[#D4AF37] mb-2">{t.stat_patents}</h3>
+            <p className="text-neutral-500 font-medium">{t.stat_patents_p}</p>
+          </div>
+        </div>
+      </section>
+
+      {/* PATENTS & SCIENCE SECTION */}
+      <section id="patents" className="py-24 bg-[#050505] relative overflow-hidden">
+        {/* Decorative Blob */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#D4AF37]/5 rounded-full blur-[150px] pointer-events-none" />
+        
+        <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
+          {/* Card 1: Centella */}
+          <div className="bg-[#0a0a0a] border border-neutral-800 p-10 rounded-3xl hover:border-[#10b981]/50 transition-colors group">
+            <div className="bg-[#10b981]/10 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <Leaf className="w-8 h-8 text-[#10b981]" />
+            </div>
+            <h3 className="text-2xl font-bold mb-4 text-white">{t.feat1_title}</h3>
+            <p className="text-neutral-400 leading-relaxed text-lg">{t.feat1_desc}</p>
+          </div>
+
+          {/* Card 2: Volcano Water */}
+          <div className="bg-[#0a0a0a] border border-neutral-800 p-10 rounded-3xl hover:border-[#3b82f6]/50 transition-colors group">
+            <div className="bg-[#3b82f6]/10 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <Droplets className="w-8 h-8 text-[#3b82f6]" />
+            </div>
+            <h3 className="text-2xl font-bold mb-4 text-white">{t.feat2_title}</h3>
+            <p className="text-neutral-400 leading-relaxed text-lg">{t.feat2_desc}</p>
+          </div>
+
+          {/* Card 3: Awards */}
+          <div className="bg-[#0a0a0a] border border-neutral-800 p-10 rounded-3xl hover:border-[#D4AF37]/50 transition-colors group">
+            <div className="bg-[#D4AF37]/10 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <Award className="w-8 h-8 text-[#D4AF37]" />
+            </div>
+            <h3 className="text-2xl font-bold mb-4 text-white">{t.feat3_title}</h3>
+            <p className="text-neutral-400 leading-relaxed text-lg">{t.feat3_desc}</p>
+          </div>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="bg-black py-12 border-t border-neutral-900 text-center text-neutral-600 text-sm">
+        <p>© 2026 Skingif1 by Riman. Global Technology Hub.</p>
+        <p className="mt-2 text-xs opacity-50">Skingif1 is an independent SaaS operating system empowering Riman Planners globally.</p>
+      </footer>
+    </div>
+  );
 }

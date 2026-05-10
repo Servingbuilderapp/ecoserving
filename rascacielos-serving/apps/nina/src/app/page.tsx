@@ -1,171 +1,92 @@
-import React from 'react'
-import { createClient } from '@/lib/supabase/server'
-import { LandingClient } from '@/components/landing/LandingClient'
+import Link from "next/link";
+import Image from "next/image";
 
-import { headers } from 'next/headers'
-
-export const dynamic = 'force-dynamic'
-
-export default async function LandingPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  const headersList = await headers()
-  const host = headersList.get('host') || ''
-  const isEcoServing = host.toLowerCase().includes('ecoserving') || host.toLowerCase().includes('localhost')
-
-  // Helper para organizar por temas si la DB no tiene el campo category
-  const getAppCategory = (app: any) => {
-    if (app.category) return app.category;
-    const name = (app.name_es || app.name_en || '').toLowerCase();
-    if (name.includes('video') || name.includes('guion') || name.includes('podcast')) return 'Medios & Eco-Conciencia';
-    if (name.includes('instagram') || name.includes('social') || name.includes('ninja') || name.includes('viral')) return 'Comunidad Verde';
-    if (name.includes('seo') || name.includes('web') || name.includes('optimiza')) return 'SEO Sostenible';
-    if (name.includes('escritor') || name.includes('artículo') || name.includes('pro') || name.includes('texto')) return 'Reportes & Análisis';
-    return 'Impacto General';
-  };
-  
-  // Fetch apps for showcase
-  let { data: allApps } = await supabase
-    .from('micro_apps')
-    .select('*')
-    .limit(20)
-
-  // Fallback si la DB de apps está vacía o falla
-  if (!allApps || allApps.length === 0) {
-    allApps = [
-      { id: '1', slug: 'carbon-footprint', name_es: 'Calculadora Huella Carbono', description_es: 'Mide y compensa emisiones.', icon: 'Calculator', category: 'Herramientas' },
-      { id: '2', slug: 'green-grants', name_es: 'Buscador de Subvenciones', description_es: 'Encuentra fondos verdes disponibles.', icon: 'Search', category: 'Proyectos' },
-      { id: '3', slug: 'eco-newsletter', name_es: 'Generador Eco-Newsletter', description_es: 'Noticias climáticas listas para enviar.', icon: 'Mail', category: 'Productividad' },
-      { id: '4', slug: 'solar-roi', name_es: 'Calculadora ROI Solar', description_es: 'Calcula retorno de paneles solares.', icon: 'Sun', category: 'Herramientas' },
-      { id: '5', slug: 'climate-simulator', name_es: 'Simulador Climático', description_es: 'Visualiza impactos a largo plazo.', icon: 'Globe', category: 'Educación' },
-      { id: '6', slug: 'sustainability-kpis', name_es: 'Dashboard de KPIs', description_es: 'Métricas de sostenibilidad para empresas.', icon: 'PieChart', category: 'Productividad' },
-    ] as any;
-  }
-
-  // 1. Fetch specific Trial Apps requested by user
-  const trialSlugs = isEcoServing 
-    ? ['hogar-sano', 'corp-eco-manager', 'comunidad-circular', 'eco-campus', 'gov-impact-mon']
-    : ['lean-canvas-gen', 'podcast-script-generator', 'product-margin-calc', 'terms-conditions-gen', 'blog-topic-gen'];
-    
-  let { data: trialAppsDb } = await supabase
-    .from('micro_apps')
-    .select('*')
-    .in('slug', trialSlugs)
-    
-  let trialApps = trialAppsDb || [];
-
-  // Fallback just in case they are not in DB yet
-  if (trialApps.length === 0) {
-    const defaultSchema = [{"name": "input", "type": "textarea", "label_es": "Describe tu necesidad", "required": true}];
-    trialApps = isEcoServing ? [
-      { id: 't1', slug: 'hogar-sano', name_es: 'Gestión de Residuos en el Hogar', description_es: 'Plan práctico para reciclar y reducir desechos en casa.', icon: 'Home', category: 'Residuos', form_schema: defaultSchema },
-      { id: 't2', slug: 'corp-eco-manager', name_es: 'Gestión de Residuos en la Empresa', description_es: 'Estrategias corporativas de cero residuos.', icon: 'Briefcase', category: 'Residuos', form_schema: defaultSchema },
-      { id: 't3', slug: 'comunidad-circular', name_es: 'Gestión de Residuos en la Comunidad', description_es: 'Organización vecinal para el manejo de basura.', icon: 'Users', category: 'Residuos', form_schema: defaultSchema },
-      { id: 't4', slug: 'eco-campus', name_es: 'Gestión de Residuos en Colegios', description_es: 'Programas educativos y reciclaje en campus.', icon: 'GraduationCap', category: 'Residuos', form_schema: defaultSchema },
-      { id: 't5', slug: 'gov-impact-mon', name_es: 'Gestión de Residuos para Gobierno', description_es: 'Políticas públicas y manejo municipal.', icon: 'Landmark', category: 'Residuos', form_schema: defaultSchema }
-    ] : [
-      { id: 't1', slug: 'lean-canvas-gen', name_es: 'Lean Canvas', description_es: 'Genera tu modelo de negocio.', icon: 'Briefcase', category: 'Negocios', form_schema: defaultSchema },
-      { id: 't2', slug: 'podcast-script-generator', name_es: 'Guiones de Podcast', description_es: 'Estructura tus episodios.', icon: 'Mic', category: 'Contenido', form_schema: defaultSchema },
-      { id: 't3', slug: 'product-margin-calc', name_es: 'Margen de Producto', description_es: 'Calculadora de costos y ventas.', icon: 'DollarSign', category: 'Finanzas', form_schema: defaultSchema },
-      { id: 't4', slug: 'terms-conditions-gen', name_es: 'Términos y Condiciones', description_es: 'Textos legales para tu web.', icon: 'FileText', category: 'Legal', form_schema: defaultSchema },
-      { id: 't5', slug: 'blog-topic-gen', name_es: 'Temas de Blog', description_es: 'Ideas de artículos.', icon: 'MessageCircle', category: 'Marketing', form_schema: defaultSchema }
-    ] as any;
-  }
-
-  // 2. Hardcode 3 general, easy-to-understand apps for Arsenal
-  const arsenalApps = isEcoServing ? [
-    { id: 'a1', slug: 'carbon-footprint', name_es: 'Calculadora Huella Carbono', description_es: 'Mide y compensa emisiones de forma sencilla.', icon: 'Calculator', category: 'Herramientas' },
-    { id: 'a2', slug: 'eco-newsletter', name_es: 'Generador Eco-Newsletter', description_es: 'Noticias climáticas listas para enviar a tu audiencia.', icon: 'Mail', category: 'Productividad' },
-    { id: 'a3', slug: 'green-grants', name_es: 'Buscador de Subvenciones', description_es: 'Encuentra fondos verdes disponibles para tus proyectos.', icon: 'Search', category: 'Proyectos' }
-  ] : [
-    { id: 'a1', slug: 'buyer-persona-builder', name_es: 'Buyer Persona', description_es: 'Define tu cliente ideal.', icon: 'Users', category: 'Marketing' },
-    { id: 'a2', slug: 'ad-copy-generator', name_es: 'Generador de Ads', description_es: 'Copys persuasivos.', icon: 'Type', category: 'Publicidad' },
-    { id: 'a3', slug: 'roi-calculator', name_es: 'Calculadora ROI', description_es: 'Calcula tu retorno.', icon: 'TrendingUp', category: 'Finanzas' }
-  ]
-
-  // Group arsenal by category
-  const arsenalCategories = arsenalApps.reduce((acc: Record<string, any[]>, app) => {
-    const cat = getAppCategory(app)
-    if (!acc[cat]) acc[cat] = []
-    acc[cat].push(app)
-    return acc
-  }, {})
-
-  // 2. Obtener planes activos de la DB
-  let { data: dbPlans } = await supabase
-    .from('plans')
-    .select('*')
-    .eq('is_active', true)
-    .order('sort_order', { ascending: true })
-
-  // Definición de contenido local (Source of Truth para presentación)
-  const localPlans = [
-    { 
-      slug: 'basic', name_en: 'Eco Seed', name_es: 'Semilla Eco', 
-      description_en: 'Test our interface with limited access.', 
-      description_es: 'Acceso básico para probar 5 herramientas fundamentales.', 
-      price_monthly: 0.00, 
-      items_en: ['5 Pre-assigned Master Apps', 'Basic AI Generation', 'Limited Access'], 
-      items_es: ['5 Apps Maestras Pre-asignadas', 'Familia, Empresas, Comunidad, Colegios, Gobierno', 'Generación Básica con IA'] 
-    },
-    { 
-      slug: 'growth-29', name_en: 'Green Sprout', name_es: 'Brote Verde', 
-      description_en: 'Start your environmental impact with essential tools.', 
-      description_es: 'Inicia tu impacto con 15 herramientas ambientales.', 
-      price_monthly: 29.00, 
-      items_en: ['Everything in Free, PLUS:', '15 Apps in Total', 'Advanced Export Options', 'Standard Priority Support'], 
-      items_es: ['Todo lo del plan Gratuito, MÁS:', '15 Herramientas a tu elección', 'Exportación Avanzada (PDF/Word)', 'Soporte Estándar Prioritario'] 
-    },
-    { 
-      slug: 'growth-49', name_en: 'Eco Catalyst', name_es: 'Catalizador Eco', 
-      description_en: 'Scale your projects with advanced tools.', 
-      description_es: 'Escala tus iniciativas con 30 herramientas avanzadas.', 
-      price_monthly: 49.00, 
-      items_en: ['Everything in Green Sprout, PLUS:', '30 Apps in Total', 'Ultra-fast Generation Speed', 'Priority Support'], 
-      items_es: ['Todo lo del plan anterior, MÁS:', '30 Herramientas Avanzadas a tu elección', 'Velocidad de Generación Ultra-rápida', 'Soporte Prioritario'] 
-    },
-    { 
-      slug: 'growth-97', name_en: 'Sustainable Leader', name_es: 'Líder Sostenible', 
-      description_en: 'Full access to 70 apps.', 
-      description_es: 'Acceso total a 70 apps de impacto ambiental.', 
-      price_monthly: 97.00, 
-      items_en: ['Everything in Eco Catalyst, PLUS:', '70 Apps in Total', 'Includes 15 Project Funding Apps', 'VIP Support'], 
-      items_es: ['Todo lo del plan anterior, MÁS:', '70 Herramientas Desbloqueadas', 'Incluye 15 Apps de Financiamiento y Subvenciones', 'Soporte VIP'] 
-    },
-    { 
-      slug: 'elite', name_en: 'Impact Elite', name_es: 'Élite de Impacto', 
-      description_en: 'The premium experience with unlimited AI Generation.', 
-      description_es: 'La experiencia premium para agencias u ONGs.', 
-      price_monthly: 197.00, 
-      items_en: ['Everything in Sustainable Leader, PLUS:', '80 Apps in Total', 'Unlimited Strategy Generator', 'Dedicated VIP Support', 'Custom Development Requests'], 
-      items_es: ['Todo lo del plan anterior, MÁS:', '80 Herramientas a tu elección', 'Generador de Estrategias y Proyectos IA ILIMITADO', 'Marca Blanca Total (Añade tu Logo)', 'Soporte VIP Dedicado', 'Prioridad en Peticiones de Desarrollo a Medida'] 
-    },
-    { 
-      slug: 'master', name_en: 'Global Vision', name_es: 'Visión Global', 
-      description_en: 'The ultimate powerhouse. Everything unlimited plus custom apps.', 
-      description_es: 'Potencia empresarial. Apps a medida para tu gobierno o multinacional.', 
-      price_monthly: 497.00, 
-      items_en: ['Everything in Impact Elite, PLUS:', '120 Apps (Total Unlimited Access)', 'We build 3 Custom Apps / Month', 'Full White-Label Portal Deployment', 'Exclusive Server', 'Enterprise Support'], 
-      items_es: ['Todo lo del plan Elite, MÁS:', '120 Herramientas (Acceso Total a TODA la Suite)', 'Construimos 3 Apps 100% Personalizadas / Mes', 'Despliegue Completo de Portal Marca Blanca Propio', 'Alojamiento en Servidor Privado Exclusivo', 'Soporte Técnico Empresarial'] 
-    }
-  ];
-
-  const syncPlans = localPlans.map(lp => {
-    const dbPlan = dbPlans?.find(dbp => dbp.slug === lp.slug);
-    return {
-      ...lp,
-      id: dbPlan?.id || `temp-${lp.slug}`,
-      plan_apps: []
-    };
-  });
-
+export default function Home() {
   return (
-    <LandingClient 
-      user={user}
-      trialApps={trialApps}
-      arsenalCategories={arsenalCategories}
-      syncPlans={syncPlans}
-      isEcoServing={isEcoServing}
-    />
-  )
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center relative overflow-hidden">
+      {/* Background glow effects */}
+      <div className="absolute top-[-20%] left-[-10%] w-[40rem] h-[40rem] bg-brand-blue/10 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-[-20%] right-[-10%] w-[40rem] h-[40rem] bg-brand-orange/10 rounded-full blur-[100px] pointer-events-none" />
+
+      <main className="z-10 flex flex-col items-center text-center px-6 max-w-5xl mx-auto space-y-10">
+        <div className="space-y-6">
+          <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-surface border border-brand-blue/30 text-brand-blue text-xs md:text-sm font-medium tracking-wide shadow-[0_0_15px_rgba(14,165,233,0.2)]">
+            <span className="w-2 h-2 rounded-full bg-brand-blue mr-2 animate-pulse" />
+            Powered by UCAM CERT SIIA Standard v1.0
+          </div>
+          <div className="flex flex-col items-center justify-center mb-4">
+            <div className="relative w-40 h-40 md:w-48 md:h-48 mb-8 rounded-full overflow-hidden border-4 border-surface shadow-[0_0_40px_rgba(14,165,233,0.3)] ring-2 ring-brand-blue/50">
+              <Image 
+                src="/nina.jpeg" 
+                alt="Nina - UCAM CERT" 
+                fill
+                className="object-cover"
+                priority
+              />
+            </div>
+            <h1 className="text-6xl md:text-8xl font-extrabold tracking-tight text-white drop-shadow-2xl">
+              Hola, soy <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-orange to-brand-blue">Nina</span>.
+            </h1>
+          </div>
+          <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+            Tu Auditora Ambiental de Inteligencia Artificial. Estoy aquí para guiarte en el proceso de certificación multihuella.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mt-16">
+          {/* Card 1 */}
+          <div className="bg-surface/80 border border-white/5 p-8 rounded-3xl backdrop-blur-md hover:border-brand-blue/40 transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-b from-brand-blue/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="h-14 w-14 rounded-2xl bg-brand-blue/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <svg className="w-7 h-7 text-brand-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-bold text-white mb-3 text-left">Diagnóstico Multihuella</h3>
+            <p className="text-gray-400 text-left leading-relaxed">Evalúo tu impacto ambiental en 7 dimensiones y 3 alcances operativos con precisión forense.</p>
+          </div>
+
+          {/* Card 2 */}
+          <div className="bg-surface/80 border border-white/5 p-8 rounded-3xl backdrop-blur-md hover:border-brand-orange/40 transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-b from-brand-orange/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="h-14 w-14 rounded-2xl bg-brand-orange/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <svg className="w-7 h-7 text-brand-orange" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-bold text-white mb-3 text-left">Construcción de PDD</h3>
+            <p className="text-gray-400 text-left leading-relaxed">Estructuramos juntos tu Project Design Document, validando tu línea base y adicionalidad.</p>
+          </div>
+
+          {/* Card 3 */}
+          <div className="bg-surface/80 border border-white/5 p-8 rounded-3xl backdrop-blur-md hover:border-brand-blue/40 transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-b from-brand-blue/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="h-14 w-14 rounded-2xl bg-brand-blue/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <svg className="w-7 h-7 text-brand-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-bold text-white mb-3 text-left">Emisión UCAM</h3>
+            <p className="text-gray-400 text-left leading-relaxed">Gestionamos la trazabilidad y emisión segura de tu Código Único de Verificación (CUV).</p>
+          </div>
+        </div>
+
+        <div className="pt-12">
+          <Link 
+            href="/auditoria/onboarding" 
+            className="group relative inline-flex items-center justify-center px-10 py-5 text-lg font-bold text-white transition-all duration-200 bg-gradient-to-r from-brand-orange to-brand-blue rounded-full hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-blue shadow-[0_0_30px_rgba(249,115,22,0.3)] hover:shadow-[0_0_40px_rgba(14,165,233,0.5)] border border-white/10"
+          >
+            Iniciar Sesión de Auditoría con Nina
+            <svg className="w-6 h-6 ml-3 -mr-1 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </Link>
+        </div>
+      </main>
+
+      <footer className="absolute bottom-8 text-sm text-gray-500 font-medium">
+        © {new Date().getFullYear()} UCAM CERT SIIA. Transformaciones verificadas.
+      </footer>
+    </div>
+  );
 }
