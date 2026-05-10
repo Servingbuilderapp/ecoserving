@@ -298,7 +298,7 @@ export function AppWorkspace({ appId, currentExecutionId, schema, profile }: App
               {/* Decorative accent */}
               <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-color-primary/50 via-color-accent-pink/50 to-color-primary/50" />
               
-              <div ref={responseRef} className="prose prose-slate prose-sm md:prose-base max-w-none relative z-10 prose-headings:text-color-base-content prose-p:text-color-base-content/80 prose-strong:text-color-base-content prose-blockquote:border-color-primary prose-blockquote:text-color-base-content/70 prose-blockquote:bg-color-primary/5 prose-blockquote:not-italic prose-blockquote:py-2 prose-blockquote:px-4 prose-blockquote:rounded-r-lg prose-a:text-color-primary">
+              <div ref={responseRef} className="prose prose-slate prose-sm md:prose-base max-w-none relative z-10 prose-headings:text-color-base-content prose-p:text-color-base-content/80 prose-strong:text-color-base-content prose-blockquote:border-color-primary prose-blockquote:text-color-base-content/70 prose-blockquote:bg-color-primary/5 prose-blockquote:not-italic prose-blockquote:py-2 prose-blockquote:px-4 prose-blockquote:rounded-r-lg prose-a:text-color-primary prose-ul:text-color-base-content/80 prose-ol:text-color-base-content/80 prose-li:text-color-base-content/80 prose-code:text-color-base-content prose-th:text-color-base-content prose-td:text-color-base-content/80 prose-table:border-color-base-content/20">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
                   {execution?.result?.markdown || ''}
                 </ReactMarkdown>

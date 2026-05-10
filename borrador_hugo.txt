@@ -1,0 +1,46 @@
+Asunto: Presentación de Arquitectura Funcional - Portal Auditoría UCAM CERT (Nina)
+
+Hola Hugo, 
+
+De parte de Gonzalo Infante y el equipo de Serving Proyectos Estratégicos, te escribo para compartirte el primer modelo funcional del portal de auditoría automatizada con nuestra IA, Nina.
+
+Es importante destacar que esto es un modelo inicial y una arquitectura funcional de prueba. El sistema ya opera con la lógica técnica del Standard UCAM CERT SIIA, pero solo estará listo para salir al público una vez que lo revisemos juntos, realicemos los ajustes necesarios y decidamos qué elementos quitar o implementar. 
+
+He habilitado esta versión para que puedas navegarla paso a paso como si fueras el usuario final. Tu rol en esta etapa es evaluar la experiencia; el sistema está abierto para que lo consultes, pero la administración y cambios estructurales los manejamos desde nuestro lado. Cualquier sugerencia de modificación que tengas, simplemente anótala y nosotros la ejecutamos.
+
+Para que tu revisión sea fluida y no te encuentres con bloqueos, aquí tienes el recorrido paso a paso:
+
+### Paso 1: Landing Page (El Primer Encuentro)
+👉 Enlace: https://nina-portal.vercel.app/
+Esta es la carta de presentación. Aquí el cliente conoce a Nina, comprende que es un sistema estricto de auditoría multihuella y encuentra el botón principal para iniciar su proceso. Haz clic en "Iniciar Sesión de Auditoría".
+
+### Paso 2: Protocolo de Inducción (Filtro de Seguridad)
+👉 Enlace: https://nina-portal.vercel.app/auditoria/onboarding
+Para proteger el estándar, nadie puede auditarse sin aceptar las reglas (como subir fotos con GPS original). Instrucción para ti: Verás que el botón de inicio está bloqueado. Debes hacer clic en las 4 casillas de términos y condiciones para que el sistema reconozca tu aceptación y el botón se encienda permitiéndote avanzar.
+
+### Paso 3: Entrevista de Diagnóstico (Construcción del PDD)
+👉 Enlace: https://nina-portal.vercel.app/auditoria
+Aquí ocurre la magia. Es una interfaz de chat donde Nina entrevista al usuario para llenar las 14 secciones obligatorias del Project Design Document (PDD). En el panel izquierdo podrás ver la barra de progreso. 
+
+### Paso 4: Dashboard de Progresión (Panel de Control)
+👉 Enlace: https://nina-portal.vercel.app/auditoria/dashboard
+Esta es la sala de control del cliente. Aquí el usuario verá en tiempo real en qué nivel del Sello A+ CERT se encuentra (del 1 al 4), cuántas UCAMs proyectadas lleva, su Código de Trazabilidad (CUV) provisional y las alertas rojas si Nina rechaza alguna de sus evidencias.
+
+### Paso 5: Exportación del Reporte Oficial (PDD)
+👉 Enlace: https://nina-portal.vercel.app/auditoria/reporte-pdd
+Cuando el cliente termina, el sistema genera automáticamente este borrador del documento oficial. Podrás ver el resumen firmado por Nina, el cuadro de activos ambientales, el diagnóstico toxicológico y la trazabilidad de las pruebas. Si haces clic en "Exportar PDD", verás cómo se formatea para PDF.
+
+---
+Siguientes pasos y requerimientos de tu parte:
+
+Para poder avanzar hacia la versión de lanzamiento al público, necesitamos tu retroalimentación en dos puntos clave:
+
+1. Diseño y Paleta de Colores: Actualmente hemos utilizado una paleta de colores oscura, con tonos esmeralda, cyan y naranja para darle un aspecto tecnológico y premium. Por favor, revísalo y envíanos la paleta de colores oficial que deseas que implementemos para alinearlo a la identidad exacta de la marca.
+2. Pasarela de Pagos: Hemos diseñado un "Trigger de Pago" (una barrera entre el Diagnóstico gratuito y la Medición). Para integrar y programar la pasarela de pagos real, necesito que nos definas la estructura de precios y tarifas que se cobrarán por la auditoría/certificación.
+
+Por favor navega el portal siguiendo estos pasos y cuéntame tus impresiones para agendar las modificaciones.
+
+Seguimos avanzando,
+
+Gonzalo Infante
+Serving Proyectos Estratégicos
