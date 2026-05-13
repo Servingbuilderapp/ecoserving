@@ -61,8 +61,8 @@ export function Sidebar({ collapsed, onToggleCollapse, mobileOpen, onCloseMobile
               <img src={profile.branding.logo_url} alt="Brand Logo" className="h-full w-full object-contain" />
             </div>
           ) : (
-            <Link href="/" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg hover:scale-105 transition-transform overflow-hidden">
-              <img src="/logo.png" alt="ECO SERVING Logo" className="h-full w-full object-contain drop-shadow-sm" />
+            <Link href="/" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg hover:scale-105 transition-transform overflow-hidden bg-[#D4AF37]/10">
+              <Sparkles className="h-6 w-6 text-[#D4AF37]" />
             </Link>
           )}
           

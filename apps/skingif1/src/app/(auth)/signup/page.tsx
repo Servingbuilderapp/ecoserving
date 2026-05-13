@@ -6,7 +6,7 @@ import { GlassCard } from '@/components/ui/GlassCard'
 import { GlowButton } from '@/components/ui/GlowButton'
 import { Input } from '@/components/ui/Input'
 import { useToast } from '@/components/ui/ToastProvider'
-import { Mail, Lock, User, Loader2 } from 'lucide-react'
+import { Mail, Lock, User, Loader2, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -58,8 +58,8 @@ export default function SignupPage() {
   return (
     <GlassCard className="p-8 w-full">
       <div className="flex flex-col items-center mb-8">
-        <div className="flex h-16 w-16 items-center justify-center rounded-xl overflow-hidden mb-4 shadow-lg shadow-color-primary/20">
-          <img src="/logo.png" alt="SkinIQ Logo" className="h-full w-full object-contain" />
+        <div className="flex h-16 w-16 items-center justify-center rounded-xl overflow-hidden mb-4 shadow-lg shadow-color-primary/20 bg-[#D4AF37]/10">
+          <Sparkles className="h-8 w-8 text-[#D4AF37]" />
         </div>
         <h1 className="text-2xl font-black text-color-base-content uppercase">
           Skin<span className="text-color-primary">IQ™</span>
