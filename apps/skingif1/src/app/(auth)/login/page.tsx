@@ -77,10 +77,10 @@ function LoginContent() {
     <GlassCard className="p-8 w-full">
       <div className="flex flex-col items-center mb-8">
         <div className="flex h-16 w-16 items-center justify-center rounded-xl overflow-hidden mb-4 shadow-lg shadow-color-primary/20">
-          <img src="/logo.png" alt="ECO SERVING Logo" className="h-full w-full object-contain" />
+          <img src="/logo.png" alt="SkinIQ Logo" className="h-full w-full object-contain" />
         </div>
         <h1 className="text-2xl font-black text-color-base-content uppercase">
-          ECO<span className="text-color-primary">SERVING</span>
+          Skin<span className="text-color-primary">IQ™</span>
         </h1>
         <p className="text-sm text-color-base-content/60 mt-2 text-center">
           {language === 'en' ? "Your AI solutions platform" : "Tu plataforma de soluciones IA"}
