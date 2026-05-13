@@ -38,27 +38,20 @@ export default async function PlansPage() {
       items_en: ['5 Pre-assigned Master Apps', 'Basic AI Generation', 'Limited Access'], 
       items_es: ['5 Apps Maestras Pre-asignadas', 'Familia, Empresas, Comunidad, Colegios, Gobierno', 'Generación Básica con IA'] 
     },
-    { 
-      slug: 'crecimiento-10', name_en: 'Initial Growth', name_es: 'Crecimiento Inicial', 
-      description_en: 'Unlocks 10 additional apps.', 
-      description_es: 'Desbloquea 10 apps adicionales.', 
-      price_monthly: 27.00, 
-      items_en: ['Everything in Free, PLUS:', '15 Apps in Total', 'Advanced Export Options', 'Standard Priority Support'], 
-      items_es: ['Todo lo del plan Gratuito, MÁS:', '15 Apps en Total a tu elección', 'Exportación Avanzada (PDF/Word)', 'Soporte Estándar Prioritario'] 
-    },
+
     { 
       slug: 'crecimiento-30', name_en: 'Pro Growth', name_es: 'Crecimiento Pro', 
       description_en: 'Unlocks 30 apps of your choice.', 
       description_es: 'Desbloquea 30 apps a tu elección.', 
-      price_monthly: 47.00, 
-      items_en: ['Everything in Initial Growth, PLUS:', '30 Apps in Total', 'Ultra-fast Generation Speed', 'Priority Support'], 
+      price_monthly: 12.00, 
+      items_en: ['Everything in Free, PLUS:', '30 Apps in Total', 'Ultra-fast Generation Speed', 'Priority Support'], 
       items_es: ['Todo lo del plan anterior, MÁS:', '30 Apps en Total a tu elección', 'Velocidad de Generación Ultra-rápida', 'Soporte Prioritario'] 
     },
     { 
       slug: 'crecimiento-max', name_en: 'Max Growth', name_es: 'Crecimiento Max', 
       description_en: 'Unlocks 70 apps of your choice.', 
       description_es: 'Desbloquea 70 apps a tu elección.', 
-      price_monthly: 97.00, 
+      price_monthly: 49.00, 
       items_en: ['Everything in Pro Growth, PLUS:', '70 Apps in Total', 'Includes 15 Project Funding Apps', 'VIP Support'], 
       items_es: ['Todo lo del plan anterior, MÁS:', '70 Apps en Total a tu elección', 'Incluye 15 Apps de Financiamiento y Subvenciones', 'Soporte VIP'] 
     },

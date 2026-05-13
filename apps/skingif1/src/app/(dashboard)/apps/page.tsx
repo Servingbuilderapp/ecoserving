@@ -47,15 +47,8 @@ export default async function AppsPage() {
 
   let apps = appsData || [];
 
-  // 3. Filtrar según el portal (Ocultar las que no corresponden)
-  apps = apps.filter(app => {
-    const isEcoApp = !!(app.name_es?.match(/^(I|II|III|IV|V|VI)\.\s/i));
-    if (isEcoServing) {
-      return isEcoApp;
-    } else {
-      return !isEcoApp;
-    }
-  });
+  // 3. Ya no filtramos las apps originales, el usuario quiere TODAS sus apps (las 70) disponibles
+  apps = apps;
 
   // SkinIQ / Riman Apps for ALL users in this portal
   const skinIqDemoApps = [
