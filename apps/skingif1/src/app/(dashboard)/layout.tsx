@@ -24,14 +24,14 @@ export default async function ProtectedLayout({
     .from('users')
     .select('*, plans(slug, name_en, name_es)')
     .eq('id', user.id)
-    .single()
+    .maybeSingle()
 
   // 2. Obtener branding global (del administrador principal)
   const { data: adminProfile } = await supabase
     .from('users')
     .select('brand_name, brand_logo_url')
     .eq('email', 'servingbuilderapp@gmail.com')
-    .single()
+    .maybeSingle()
 
   const branding = {
     name: profile?.brand_name || user?.user_metadata?.brand_name || adminProfile?.brand_name || 'SkinIQ™',
