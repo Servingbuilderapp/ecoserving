@@ -72,7 +72,7 @@ export function Sidebar({ collapsed, onToggleCollapse, mobileOpen, onCloseMobile
             "text-lg font-black tracking-tighter bg-clip-text text-transparent bg-linear-to-r from-color-primary via-color-accent-pink to-color-accent-violet whitespace-nowrap transition-all duration-300 drop-shadow-sm",
             collapsed && "lg:opacity-0 lg:w-0"
           )} style={{ WebkitTextFillColor: 'transparent', color: 'transparent' }}>
-            {isEcoServing ? profile?.branding?.name.toUpperCase() : 'SERVING BUILDER'}
+            {isEcoServing ? profile?.branding?.name.toUpperCase() : 'SKINIQ™'}
           </span>
         </div>
         

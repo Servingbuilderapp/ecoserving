@@ -26,10 +26,8 @@ export async function generateMetadata(): Promise<Metadata> {
   const isEcoServing = host.toLowerCase().includes('ecoserving') || host.toLowerCase().includes('localhost')
 
   return {
-    title: isEcoServing ? "ECOSERVING" : "SERVING BUILDER APP",
-    description: isEcoServing 
-      ? "Advanced AI solutions for building and serving environmental applications."
-      : "Plataforma de más de 200 aplicaciones de Inteligencia Artificial para emprendedores.",
+    title: "SkinIQ™ | Powered by Skingif1",
+    description: "Plataforma de Inteligencia Artificial para el cuidado de la piel.",
   }
 }
 
