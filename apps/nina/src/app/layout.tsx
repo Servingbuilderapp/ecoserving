@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { PayPalProvider } from "@/components/providers/PayPalProvider";
+import { Watermark } from "@/components/ui/Watermark";
+import { AccessTracker } from "@/components/ui/AccessTracker";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,6 +33,8 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <PayPalProvider>
           {children}
+          <AccessTracker portalName="Nina" />
+          <Watermark />
         </PayPalProvider>
       </body>
     </html>

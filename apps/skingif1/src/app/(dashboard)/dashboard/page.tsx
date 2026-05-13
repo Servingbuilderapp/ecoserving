@@ -1,298 +1,121 @@
-'use client'
+"use client";
 
-import React from 'react'
-import { useTranslation } from '@/hooks/useTranslation'
-import { GlassCard } from '@/components/ui/GlassCard'
-import { GlowButton } from '@/components/ui/GlowButton'
-import { Users, Activity, TrendingUp, Sparkles, Plus, ArrowRight, Settings, FileText, CheckCircle2, XCircle, Loader2 } from 'lucide-react'
-import { createClient } from '@/lib/supabase/client'
-import Link from 'next/link'
-import { cn } from '@/lib/utils'
+import React from "react";
+import Link from "next/link";
+import { Camera, ArrowRight, UserCircle2, Sparkles, Droplets, ArrowUpCircle, Sun, Activity, Maximize, AlertCircle } from "lucide-react";
+import { GlassCard } from "@/components/ui/GlassCard";
+import { ScoreDial } from "@/components/ui/ScoreDial";
+import { GlowButton } from "@/components/ui/GlowButton";
 
-export default function DashboardPage() {
-  const { language } = useTranslation()
-  const [greeting, setGreeting] = React.useState('')
-  const [emoji, setEmoji] = React.useState('')
-  const [userName, setUserName] = React.useState('')
-  const [subtitle, setSubtitle] = React.useState('')
-  
-  // Real stats state
-  const [stats, setStats] = React.useState([
-    { label: language === 'en' ? 'Generations' : 'Generaciones', value: '0', icon: Activity, trend: '0%', isPositive: true },
-    { label: language === 'en' ? 'Apps Used' : 'Apps Usadas', value: '0', icon: Users, trend: '0%', isPositive: true },
-    { label: language === 'en' ? 'Success Rate' : 'Tasa de Éxito', value: '0%', icon: TrendingUp, trend: '0%', isPositive: true },
-    { label: language === 'en' ? 'Current Plan' : 'Plan Actual', value: '---', icon: Sparkles, trend: '', isPositive: true },
-  ])
-
-  const [activities, setActivities] = React.useState<any[]>([])
-  const [loading, setLoading] = React.useState(true)
+export default function SkinIQDashboard() {
+  const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    const fetchData = async () => {
-      const supabase = createClient()
-      const { data: { user } } = await supabase.auth.getUser()
-      
-      if (user) {
-        // 1. Fetch Profile
-        const { data: profile } = await supabase
-          .from('users')
-          .select('first_name, full_name, plan_id, plans(name_en, name_es, slug)')
-          .eq('id', user.id)
-          .single()
-        
-        // Avoid setting name to 'servingbuilderapp'
-        let parsedName = profile?.first_name || profile?.full_name?.split(' ')[0] || user.email?.split('@')[0] || (language === 'en' ? 'User' : 'Usuario');
-        if (parsedName.toLowerCase() === 'servingbuilderapp') {
-          parsedName = 'ECOServing';
-        }
-        setUserName(parsedName)
+    // Simulate loading data
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
-        // 2. Fetch Executions for Stats
-        const { data: executions } = await supabase
-          .from('app_executions')
-          .select('id, status, app_id, micro_apps(name_en, name_es), created_at')
-          .eq('user_id', user.id)
-          .order('created_at', { ascending: false })
+  const scores = [
+    { label: "Skin Health Index™", value: 92, icon: Activity },
+    { label: "Glow Score™", value: 88, icon: Sparkles },
+    { label: "Skin Age Gap™", value: 85, icon: UserCircle2 },
+    { label: "Hydration Level", value: 78, icon: Droplets },
+    { label: "Elasticity Index", value: 90, icon: ArrowUpCircle },
+    { label: "Pigmentation Variance", value: 82, icon: Sun },
+    { label: "Wrinkle Depth", value: 75, icon: AlertCircle },
+    { label: "Pores & Texture", value: 89, icon: Maximize },
+  ];
 
-        if (executions) {
-          const total = executions.length
-          const completed = executions.filter(ex => ex.status === 'completed').length
-          const uniqueApps = new Set(executions.map(ex => ex.app_id)).size
-          const successRate = total > 0 ? Math.round((completed / total) * 100) : 0
-          
-          const planData = Array.isArray(profile?.plans) ? profile.plans[0] : profile?.plans
-          const planName = planData 
-            ? (language === 'en' ? planData.name_en : planData.name_es)
-            : (language === 'en' ? 'Free' : 'Gratis')
-
-          setStats([
-            { label: language === 'en' ? 'Generations' : 'Generaciones', value: total.toString(), icon: Activity, trend: '+100%', isPositive: true },
-            { label: language === 'en' ? 'Apps Used' : 'Apps Usadas', value: uniqueApps.toString(), icon: Users, trend: '', isPositive: true },
-            { label: language === 'en' ? 'Success Rate' : 'Tasa de Éxito', value: `${successRate}%`, icon: TrendingUp, trend: '', isPositive: true },
-            { label: language === 'en' ? 'Current Plan' : 'Plan Actual', value: planName, icon: Sparkles, trend: '', isPositive: true },
-          ])
-
-          // 3. Map Activities (Last 5)
-          const mappedActivities = executions.slice(0, 5).map(ex => {
-            const appData = Array.isArray(ex.micro_apps) ? ex.micro_apps[0] : ex.micro_apps;
-            return {
-              id: ex.id,
-              title: language === 'en' ? (appData?.name_en || 'App Execution') : (appData?.name_es || 'Ejecución de App'),
-            time: formatTimeAgo(new Date(ex.created_at)),
-            status: ex.status,
-            type: 'app'
-            };
-          })
-          setActivities(mappedActivities)
-        }
-      }
-      setLoading(false)
-    }
-
-    const updateGreeting = () => {
-      const hour = new Date().getHours()
-      if (hour < 12) {
-        setGreeting(language === 'en' ? 'Good morning' : 'Buenos días')
-        setEmoji('☀️')
-        setSubtitle(language === 'en' ? 'What will you create today?' : '¿Qué vas a crear hoy?')
-      } else if (hour < 18) {
-        setGreeting(language === 'en' ? 'Good afternoon' : 'Buenas tardes')
-        setEmoji('🌤️')
-        setSubtitle(language === 'en' ? 'Let\'s make something amazing.' : 'Vamos a crear algo increíble.')
-      } else {
-        setGreeting(language === 'en' ? 'Good evening' : 'Buenas noches')
-        setEmoji('🌙')
-        setSubtitle(language === 'en' ? 'Refining your next big idea?' : '¿Perfeccionando tu próxima gran idea?')
-      }
-    }
-
-    fetchData()
-    updateGreeting()
-  }, [language])
-
-  const formatTimeAgo = (date: Date) => {
-    const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000)
-    if (seconds < 60) return language === 'en' ? 'Just now' : 'Ahora mismo'
-    const minutes = Math.floor(seconds / 60)
-    if (minutes < 60) return language === 'en' ? `${minutes}m ago` : `hace ${minutes}m`
-    const hours = Math.floor(minutes / 60)
-    if (hours < 24) return language === 'en' ? `${hours}h ago` : `hace ${hours}h`
-    return date.toLocaleDateString()
+  if (loading) {
+    return (
+      <div className="min-h-[80vh] flex flex-col items-center justify-center animate-pulse-ring">
+        <Sparkles className="w-12 h-12 text-[#D4AF37] mb-4 animate-spin-slow" />
+        <h2 className="text-2xl font-display font-bold text-[#1A1A1A]">Analizando SkinIQ...</h2>
+      </div>
+    );
   }
 
   return (
-    <div className="w-full max-w-7xl mx-auto p-6 md:p-8 space-y-8 pb-12">
-      {/* Personalized Greeting */}
-      <div className="mb-2 animate-in fade-in slide-in-from-top-4 duration-700 relative">
-        <div className="absolute -left-8 top-0 bottom-0 w-1 bg-linear-to-b from-color-primary to-color-accent-pink rounded-full blur-[2px]" />
-        <h2 className="text-2xl md:text-3xl font-black text-color-base-content tracking-tighter italic uppercase flex items-center gap-4">
-          {greeting}, <span className="text-gradient-magma drop-shadow-[0_0_15px_rgba(249,115,22,0.3)]">{userName || '...'}</span> {emoji}
-        </h2>
-        <p className="text-color-base-content/60 mt-2 font-black uppercase tracking-[0.3em] text-xs">
-          {subtitle}
-        </p>
-      </div>
-
-      <div className="h-px w-full bg-linear-to-r from-color-base-content/10 via-color-base-content/5 to-transparent mb-8" />
-
-      {/* Header section */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="max-w-7xl mx-auto p-6 md:p-8 space-y-12 animate-slide-up">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-bold text-color-base-content tracking-tight">
-            {language === 'en' ? 'Dashboard Overview' : 'Resumen del Panel'}
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#D4AF37]/10 text-[#D4AF37] text-xs font-bold uppercase tracking-widest rounded-full mb-4">
+            <Sparkles className="w-4 h-4" />
+            Premium Analysis
+          </div>
+          <h1 className="text-4xl md:text-5xl font-black text-[#1A1A1A] tracking-tight">
+            Tu SkinIQ™ Dashboard
           </h1>
-          <p className="text-color-base-content/60 mt-1">
-            {language === 'en' ? 'Welcome back. Here is what is happening today.' : 'Bienvenido de nuevo. Esto es lo que pasa hoy.'}
+          <p className="text-neutral-600 mt-2 text-lg">
+            Descubre los 8 biomarcadores de tu piel.
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          <Link href="/apps">
-            <GlowButton className="gap-2">
-              <Plus className="h-4 w-4" />
-              {language === 'en' ? 'Explore Apps' : 'Explorar Apps'}
-            </GlowButton>
-          </Link>
-        </div>
+        
+        <Link href="/capture">
+          <button className="bg-[#1A1A1A] text-white font-bold py-3 px-6 rounded-full hover:bg-black transition-colors flex items-center gap-2 shadow-xl hover:scale-105 transform">
+            <Camera className="w-5 h-5" />
+            Nueva Captura Triple
+          </button>
+        </Link>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map((stat, i) => (
-          <GlassCard key={i} className="p-7 relative overflow-hidden group premium-border-glow border-color-base-content/10">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-color-primary/10 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-110 transition-transform blur-2xl" />
-            <div className="flex items-start justify-between mb-5 relative z-10">
-              <div className="p-2.5 rounded-xl bg-color-base-content/5 border border-color-base-content/10 text-color-primary shadow-inner">
-                <stat.icon className="h-6 w-6" />
-              </div>
-              {stat.trend && (
-                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
-                  stat.isPositive 
-                    ? 'bg-green-500/10 text-green-400 border-green-500/20' 
-                    : 'bg-red-500/10 text-red-400 border-red-500/20'
-                }`}>
-                  {stat.trend}
-                </span>
-              )}
-            </div>
-            <div className="relative z-10">
-              <h3 className="text-color-base-content/60 text-[10px] font-black uppercase tracking-[0.2em] mb-1.5">
-                {stat.label}
-              </h3>
-              <p className="text-3xl font-black text-color-base-content tracking-tighter text-glow-primary">
-                {loading ? '...' : stat.value}
-              </p>
-            </div>
-          </GlassCard>
-        ))}
-      </div>
-
-      {/* Main Content Grid */}
+      {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
-        {/* Charts Section (Simplified for this version) */}
-        <div className="lg:col-span-2 space-y-8">
-          <GlassCard className="p-10 flex flex-col items-center justify-center min-h-[350px] text-center space-y-6 relative group border-color-base-content/10">
-            <div className="absolute inset-0 bg-linear-to-br from-color-primary/5 via-transparent to-color-accent-pink/5 opacity-50" />
-            <div className="p-6 rounded-full bg-color-base-content/5 border border-color-base-content/10 shadow-2xl relative z-10 group-hover:scale-110 transition-transform">
-              <Sparkles className="h-10 w-10 text-color-primary animate-pulse" />
+        {/* Facial Heatmap / Overview */}
+        <div className="lg:col-span-1">
+          <GlassCard className="h-full flex flex-col items-center justify-center p-8 bg-gradient-to-br from-[#F2E8DF]/80 to-[#EAE0D7]/80">
+            <div className="relative w-full max-w-xs aspect-[3/4] rounded-[3rem] border border-white/40 overflow-hidden shadow-2xl mb-8 group">
+              <div className="absolute inset-0 bg-black/5 z-10" />
+              {/* Simulated Heatmap Overlay */}
+              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=800&q=80')] bg-cover bg-center mix-blend-multiply opacity-80" />
+              <div className="absolute top-[30%] left-[25%] w-16 h-16 bg-[#10B981] rounded-full blur-[30px] opacity-60 mix-blend-screen" />
+              <div className="absolute top-[45%] right-[20%] w-20 h-20 bg-[#D4AF37] rounded-full blur-[40px] opacity-60 mix-blend-screen" />
+              <div className="absolute bottom-[20%] left-[40%] w-24 h-24 bg-[#E8C1C5] rounded-full blur-[40px] opacity-60 mix-blend-screen" />
+              
+              <div className="absolute inset-0 ring-1 ring-inset ring-white/30 rounded-[3rem] pointer-events-none" />
             </div>
-            <div>
-              <h2 className="text-xl font-bold text-color-base-content">
-                {language === 'en' ? 'Start Creating with AI' : 'Empieza a crear con IA'}
-              </h2>
-              <p className="text-color-base-content/60 max-w-md mx-auto mt-2">
-                {language === 'en' 
-                  ? 'Access over 10 specialized AI applications to boost your productivity and creativity.' 
-                  : 'Accede a más de 10 aplicaciones de IA especializadas para potenciar tu productividad.'}
+
+            <div className="text-center">
+              <h3 className="font-display font-bold text-2xl text-[#1A1A1A] mb-2">Resumen General</h3>
+              <p className="text-sm text-neutral-600">
+                Tu piel muestra un nivel excepcional de hidratación y un Skin Age Gap™ positivo.
               </p>
             </div>
-            <Link href="/apps">
-              <GlowButton variant="ghost" className="mt-4">
-                {language === 'en' ? 'Go to App Library' : 'Ir a la Librería'}
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </GlowButton>
-            </Link>
           </GlassCard>
-
-          {/* Quick Actions */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Link href="/plans" className="group">
-              <div className="h-full rounded-2xl p-6 bg-linear-to-br from-color-primary/10 to-transparent border border-color-primary/20 hover:border-color-primary/50 transition-colors relative overflow-hidden">
-                <div className="absolute inset-0 bg-color-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="relative z-10 flex items-center gap-4">
-                  <div className="p-3 rounded-xl bg-color-primary/20 text-color-primary">
-                    <FileText className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-color-base-content">{language === 'en' ? 'Upgrade Plan' : 'Mejorar Plan'}</h3>
-                    <p className="text-sm text-color-base-content/60">{language === 'en' ? 'Get more generations' : 'Obtén más generaciones'}</p>
-                  </div>
-                </div>
-              </div>
-            </Link>
-            <a href="mailto:servingbuilderapp@gmail.com" className="group cursor-pointer rounded-2xl p-6 bg-linear-to-br from-color-accent-pink/10 to-transparent border border-color-accent-pink/20 hover:border-color-accent-pink/50 transition-colors relative overflow-hidden">
-              <div className="absolute inset-0 bg-color-accent-pink/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="relative z-10 flex items-center gap-4">
-                <div className="p-3 rounded-xl bg-color-accent-pink/20 text-color-accent-pink">
-                  <Settings className="h-6 w-6" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-color-base-content">{language === 'en' ? 'Help Center' : 'Centro de Ayuda'}</h3>
-                  <p className="text-sm text-color-base-content/60">{language === 'en' ? 'Need assistance?' : '¿Necesitas ayuda?'}</p>
-                </div>
-              </div>
-            </a>
-          </div>
         </div>
 
-        {/* Recent Activity Sidebar */}
-        <GlassCard className="p-6 h-full flex flex-col">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-semibold text-color-base-content">
-              {language === 'en' ? 'Recent Activity' : 'Actividad Reciente'}
-            </h2>
-          </div>
-          
-          <div className="flex-1 relative">
-            <div className="absolute top-0 bottom-0 left-[15px] w-px bg-color-base-content/10" />
-            
-            <div className="space-y-6">
-              {loading ? (
-                <div className="flex flex-col items-center justify-center py-12 opacity-20">
-                  <Loader2 className="h-6 w-6 animate-spin mb-2" />
-                  <span className="text-xs uppercase tracking-widest font-bold">Cargando...</span>
-                </div>
-              ) : activities.length === 0 ? (
-                <div className="text-center py-12 text-color-base-content/40 italic text-sm">
-                  {language === 'en' ? 'No recent activity' : 'Sin actividad reciente'}
-                </div>
-              ) : activities.map((item, i) => (
-                <div key={i} className="relative flex items-start gap-4">
-                  <div className={cn(
-                    "h-8 w-8 rounded-full flex items-center justify-center shrink-0 border z-10 bg-color-base-200",
-                    item.status === 'completed' ? "border-green-500/50 text-green-600" :
-                    item.status === 'error' ? "border-red-500/50 text-red-600" :
-                    "border-color-primary/50 text-color-primary"
-                  )}>
-                    {item.status === 'completed' ? <CheckCircle2 className="h-4 w-4" /> :
-                     item.status === 'error' ? <XCircle className="h-4 w-4" /> :
-                     <Loader2 className="h-4 w-4 animate-spin" />}
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-sm font-bold text-color-base-content truncate">
-                      {item.title}
-                    </p>
-                    <p className="text-[10px] text-color-base-content/40 uppercase tracking-widest mt-1">
-                      {item.time} • {item.status}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </GlassCard>
-
+        {/* 8 Scores Grid */}
+        <div className="lg:col-span-2 grid grid-cols-2 sm:grid-cols-4 gap-4">
+          {scores.map((score, idx) => (
+            <GlassCard key={idx} className="flex flex-col items-center justify-center text-center p-6 hover:bg-[#F2E8DF]/60 transition-colors group cursor-pointer">
+              <div className="mb-4 text-[#D4AF37] bg-white/50 p-3 rounded-2xl group-hover:scale-110 transition-transform">
+                <score.icon className="w-6 h-6" />
+              </div>
+              <ScoreDial score={score.value} label={score.label} size="sm" />
+            </GlassCard>
+          ))}
+        </div>
       </div>
+
+      {/* Action Area */}
+      <GlassCard className="p-8 mt-8 flex flex-col md:flex-row items-center justify-between bg-[#1A1A1A] text-white border-none">
+        <div className="mb-6 md:mb-0">
+          <h3 className="font-display font-bold text-2xl mb-2">Recomendación Riman</h3>
+          <p className="text-white/70 max-w-xl">
+            Basado en tu Pigmentation Variance (82) y Glow Score (88), el protocolo BotaLab + EX-Incell te dará los mejores resultados en 2 semanas.
+          </p>
+        </div>
+        <button className="bg-[#D4AF37] text-[#1A1A1A] font-bold py-4 px-8 rounded-full hover:bg-white transition-colors flex items-center gap-2 shrink-0">
+          Ver Protocolo Completo
+          <ArrowRight className="w-5 h-5" />
+        </button>
+      </GlassCard>
+
     </div>
-  )
+  );
 }

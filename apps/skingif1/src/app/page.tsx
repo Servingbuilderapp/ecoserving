@@ -232,7 +232,7 @@ export default function RimanLanding() {
             </select>
           </div>
           
-          <Link href="/riman/dashboard" className="text-sm font-bold bg-white text-black px-4 py-2 rounded-lg hover:bg-neutral-200 transition-colors hidden sm:block">
+          <Link href="/dashboard" className="text-sm font-bold bg-white text-black px-4 py-2 rounded-lg hover:bg-neutral-200 transition-colors hidden sm:block">
             {t.nav_hub}
           </Link>
         </div>
@@ -259,13 +259,13 @@ export default function RimanLanding() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link 
-              href="/riman/onboarding" 
+              href="/capture" 
               className="bg-gradient-to-r from-[#D4AF37] to-[#F3E5AB] text-black font-extrabold px-8 py-5 rounded-xl shadow-[0_0_40px_rgba(212,175,55,0.3)] hover:scale-105 transition-transform flex items-center justify-center gap-2 text-lg"
             >
               {t.btn_start} <ArrowRight className="w-5 h-5" />
             </Link>
             <Link 
-              href="/riman/dashboard" 
+              href="/dashboard" 
               className="bg-[#111] border border-neutral-800 text-white font-bold px-8 py-5 rounded-xl hover:bg-neutral-900 hover:border-neutral-600 transition-colors flex items-center justify-center text-lg"
             >
               {t.btn_dash}

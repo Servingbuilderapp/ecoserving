@@ -5,6 +5,8 @@ import { LanguageProvider } from "@/context/LanguageContext"
 import { ToastProvider } from "@/components/ui/ToastProvider"
 import { PayPalProvider } from "@/components/providers/PayPalProvider"
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton"
+import { Watermark } from "@/components/ui/Watermark"
+import { AccessTracker } from "@/components/ui/AccessTracker"
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -46,7 +48,9 @@ export default function RootLayout({
           <ToastProvider>
             <PayPalProvider>
               {children}
+              <AccessTracker portalName="Skingif1" />
               <WhatsAppButton />
+              <Watermark />
             </PayPalProvider>
           </ToastProvider>
         </LanguageProvider>
