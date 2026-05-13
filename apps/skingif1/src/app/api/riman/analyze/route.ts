@@ -19,27 +19,35 @@ export async function POST(req: Request) {
       // MOCK RESULT IF NO API KEY (Para que el usuario pueda probar el UI)
       await new Promise(r => setTimeout(r, 2500));
       return NextResponse.json({
-        "hidratacion": {"score": 3, "justificacion": "Se observan zonas con falta de brillo y leve descamación superficial en el área de las mejillas."},
-        "textura_poros": {"score": 6, "justificacion": "Los poros en la zona T (nariz y mentón) se notan ligeramente dilatados, indicando exceso de sebo acumulado."},
-        "lineas_expresion": {"score": 4, "justificacion": "Las líneas de la frente y los surcos nasogenianos están marcados, sugiriendo pérdida de colágeno y elasticidad."},
-        "sensibilidad": {"score": 8, "justificacion": "No se observan rojeces severas ni capilares dilatados; la barrera cutánea parece estable frente a irritaciones."}
+        "salud_piel": 88,
+        "brillo": 85,
+        "edad_facial": 90,
+        "hidratacion": 72,
+        "elasticidad": 86,
+        "varianza_pigmentacion": 80,
+        "profundidad_arrugas": 78,
+        "textura_poros": 82
       });
     }
 
-    const payload = {
-      contents: [
-        {
-          parts: [
-            {
-              text: `Actúa como un Dermatólogo Científico Experto de la multinacional de K-Beauty RIMAN. Analiza la siguiente imagen facial detalladamente y evalúa del 1 al 10 las siguientes variables críticas: 
-1. hidratacion (donde 1 es piel extremadamente deshidratada/descamada y 10 es piel perfecta y luminosa). 
-2. textura_poros (donde 1 es textura muy irregular/poros muy obstruidos y 10 es piel de porcelana). 
-3. lineas_expresion (donde 1 son arrugas muy profundas/envejecimiento severo y 10 es piel totalmente lisa y joven). 
-4. sensibilidad (donde 1 es rojez extrema/inflamación/rosácea y 10 es piel totalmente calmada). 
+      const payload = {
+        contents: [
+          {
+            parts: [
+              {
+                text: `Actúa como un Dermatólogo Científico Experto de la multinacional de K-Beauty RIMAN. Analiza la siguiente imagen facial detalladamente y evalúa del 1 al 100 las siguientes variables críticas: 
+1. salud_piel (donde 1 es muy mala salud y 100 es salud óptima).
+2. brillo (donde 1 es opaca y 100 es brillo radiante).
+3. edad_facial (calcula una brecha de edad positiva, 100 es lo mejor).
+4. hidratacion (donde 1 es piel extremadamente deshidratada/descamada y 100 es piel perfecta y luminosa). 
+5. elasticidad (donde 1 es muy flácida y 100 es firme).
+6. varianza_pigmentacion (donde 1 es manchas extremas y 100 es tono parejo).
+7. profundidad_arrugas (donde 1 son arrugas muy profundas/envejecimiento severo y 100 es piel totalmente lisa y joven). 
+8. textura_poros (donde 1 es textura muy irregular/poros muy obstruidos y 100 es piel de porcelana). 
 
 Devuelve ESTRICTAMENTE UN SOLO OBJETO JSON VÁLIDO con el siguiente formato y claves exactas. NO incluyas markdown, NO incluyas backticks, NO incluyas texto fuera de las llaves: 
-{ "hidratacion": {"score": 5, "justificacion": "razón dermatológica corta..."}, "textura_poros": {"score": 7, "justificacion": "..."}, "lineas_expresion": {"score": 6, "justificacion": "..."}, "sensibilidad": {"score": 8, "justificacion": "..."} }`
-            },
+{ "salud_piel": 92, "brillo": 88, "edad_facial": 85, "hidratacion": 78, "elasticidad": 90, "varianza_pigmentacion": 82, "profundidad_arrugas": 75, "textura_poros": 89 }`
+              },
             {
               inline_data: {
                 mime_type: "image/jpeg",

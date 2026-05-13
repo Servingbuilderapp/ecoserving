@@ -232,7 +232,7 @@ export default function RimanLanding() {
             </select>
           </div>
           
-          <Link href="/dashboard" className="text-sm font-bold bg-white text-black px-4 py-2 rounded-lg hover:bg-neutral-200 transition-colors hidden sm:block">
+          <Link href="/riman/dashboard" className="text-sm font-bold bg-white text-black px-4 py-2 rounded-lg hover:bg-neutral-200 transition-colors hidden sm:block">
             {t.nav_hub}
           </Link>
         </div>
@@ -265,7 +265,7 @@ export default function RimanLanding() {
               {t.btn_start} <ArrowRight className="w-5 h-5" />
             </Link>
             <Link 
-              href="/dashboard" 
+              href="/riman/dashboard" 
               className="bg-[#111] border border-neutral-800 text-white font-bold px-8 py-5 rounded-xl hover:bg-neutral-900 hover:border-neutral-600 transition-colors flex items-center justify-center text-lg"
             >
               {t.btn_dash}

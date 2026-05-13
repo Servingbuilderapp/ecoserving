@@ -254,6 +254,11 @@ export default function RimanHub() {
         { id: "acne_protocol", title: "Protocolo Acné", icon: Target, color: "from-[#f59e0b] to-[#fbbf24]", href: "/riman/dashboard/app/acne_protocol", alert: false, tier: "pro" },
         { id: "sun_damage", title: "Daño Solar", icon: Zap, color: "from-[#D4AF37] to-[#F3E5AB]", href: "/riman/dashboard/app/sun_damage", alert: false, tier: "pro" },
         { id: "nutrition", title: "Nutrición & Piel", icon: HeartPulse, color: "from-[#10b981] to-[#34d399]", href: "/riman/dashboard/app/nutrition", alert: false, tier: "pro" },
+        // NEW SKIN_IQ APPS
+        { id: "rutina-gen", title: "Generador Rutinas IA", icon: Sparkles, color: "from-[#D4AF37] to-[#F3E5AB]", href: "/riman/dashboard/app/rutina-gen", alert: false, tier: "pro" },
+        { id: "ingredients-analyzer", title: "Analizador Ingredientes", icon: Activity, color: "from-[#ec4899] to-[#f472b6]", href: "/riman/dashboard/app/ingredients-analyzer", alert: false, tier: "pro" },
+        { id: "ventas-riman", title: "Asistente Ventas Riman", icon: MessageCircle, color: "from-[#3b82f6] to-[#60a5fa]", href: "/riman/dashboard/app/ventas-riman", alert: false, tier: "pro" },
+        { id: "progress-sim", title: "Simulador Progreso", icon: CalendarDays, color: "from-[#10b981] to-[#34d399]", href: "/riman/dashboard/app/progress-sim", alert: false, tier: "pro" },
       ]
     },
     { category: t.cat_finance, icon: CircleDollarSign, color: "text-emerald-400", apps: [
