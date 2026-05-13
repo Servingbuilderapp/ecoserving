@@ -31,45 +31,44 @@ export default async function PlansPage() {
   // Definición de contenido local (Source of Truth para presentación)
   const localPlans = [
     { 
-      slug: 'gratis', name_en: 'Free Plan', name_es: 'Gratuito', 
+      slug: 'gratis', name_en: 'Free Plan', name_es: 'Descubrimiento SkinIQ', 
       description_en: '5 pre-assigned master apps.', 
-      description_es: '5 Apps maestras pre-asignadas.', 
+      description_es: 'Acceso básico para análisis facial y 5 Apps esenciales de cuidado.', 
       price_monthly: 0.00, 
       items_en: ['5 Pre-assigned Master Apps', 'Basic AI Generation', 'Limited Access'], 
-      items_es: ['5 Apps Maestras Pre-asignadas', 'Familia, Empresas, Comunidad, Colegios, Gobierno', 'Generación Básica con IA'] 
+      items_es: ['5 Apps Esenciales SkinIQ', 'Análisis Facial Básico', 'Recomendación de Rutinas'] 
     },
-
     { 
-      slug: 'crecimiento-30', name_en: 'Pro Growth', name_es: 'Crecimiento Pro', 
+      slug: 'crecimiento-30', name_en: 'Pro Growth', name_es: 'Ritual Riman (30 Apps)', 
       description_en: 'Unlocks 30 apps of your choice.', 
-      description_es: 'Desbloquea 30 apps a tu elección.', 
+      description_es: 'El catálogo perfecto para potenciar tus ventas y seguimiento.', 
       price_monthly: 12.00, 
       items_en: ['Everything in Free, PLUS:', '30 Apps in Total', 'Ultra-fast Generation Speed', 'Priority Support'], 
-      items_es: ['Todo lo del plan anterior, MÁS:', '30 Apps en Total a tu elección', 'Velocidad de Generación Ultra-rápida', 'Soporte Prioritario'] 
+      items_es: ['Todo lo del plan anterior, MÁS:', '30 Apps a tu elección', 'Asistente de Ventas Riman Básico', 'Generación Ultra-rápida'] 
     },
     { 
-      slug: 'crecimiento-max', name_en: 'Max Growth', name_es: 'Crecimiento Max', 
+      slug: 'crecimiento-max', name_en: 'Max Growth', name_es: 'SkinIQ Premium (70 Apps)', 
       description_en: 'Unlocks 70 apps of your choice.', 
-      description_es: 'Desbloquea 70 apps a tu elección.', 
+      description_es: 'Catálogo extendido para líderes y equipos de belleza.', 
       price_monthly: 49.00, 
       items_en: ['Everything in Pro Growth, PLUS:', '70 Apps in Total', 'Includes 15 Project Funding Apps', 'VIP Support'], 
-      items_es: ['Todo lo del plan anterior, MÁS:', '70 Apps en Total a tu elección', 'Incluye 15 Apps de Financiamiento y Subvenciones', 'Soporte VIP'] 
+      items_es: ['Todo lo del plan anterior, MÁS:', '70 Apps a tu elección', 'Simuladores Avanzados de Progreso', 'Soporte Prioritario VIP'] 
     },
     { 
-      slug: 'elite', name_en: 'Elite Plan', name_es: 'Plan Elite', 
+      slug: 'elite', name_en: 'Elite Plan', name_es: 'Director Elite (80 Apps)', 
       description_en: 'Unlocks 80 apps of your choice.', 
-      description_es: 'Desbloquea 80 apps a tu elección.', 
+      description_es: 'Herramientas absolutas para agencias y directores Riman.', 
       price_monthly: 197.00, 
       items_en: ['Everything in Max Growth, PLUS:', '80 Apps in Total', 'Unlimited Strategy Generator', 'Dedicated VIP Support', 'Custom Development Requests'], 
-      items_es: ['Todo lo del plan anterior, MÁS:', '80 Apps en Total a tu elección', 'Generador de Estrategias y Proyectos IA ILIMITADO', 'Marca Blanca Total (Añade tu Logo)', 'Soporte VIP Dedicado', 'Prioridad en Peticiones de Desarrollo a Medida'] 
+      items_es: ['Todo lo del plan anterior, MÁS:', '80 Apps a tu elección', 'Análisis de Ingredientes Ilimitado', 'Soporte VIP Dedicado', 'Marca Blanca Total (Añade tu Logo)'] 
     },
     { 
-      slug: 'master', name_en: 'Master Plan', name_es: 'Plan Master', 
+      slug: 'master', name_en: 'Master Plan', name_es: 'SkinIQ Master (120 Apps)', 
       description_en: 'Unlimited Unlock (120 apps).', 
-      description_es: 'Desbloqueo Ilimitado (120 apps).', 
+      description_es: 'Desbloqueo Ilimitado. Construimos tu imperio de Beauty Tech.', 
       price_monthly: 497.00, 
       items_en: ['Everything in Elite, PLUS:', '120 Apps (Total Unlimited Access)', 'We build 3 Custom Apps / Month', 'Full White-Label Portal Deployment', 'Exclusive Server', 'Enterprise Support'], 
-      items_es: ['Todo lo del plan Elite, MÁS:', '120 Apps (Acceso Total a TODA la Suite)', 'Construimos 3 Apps 100% Personalizadas / Mes', 'Despliegue Completo de Portal Marca Blanca Propio', 'Alojamiento en Servidor Privado Exclusivo', 'Soporte Técnico Empresarial'] 
+      items_es: ['Todo lo del plan Elite, MÁS:', '120 Apps (Acceso Total a TODA la Suite)', 'Construimos 3 Apps Riman 100% Personalizadas / Mes', 'Despliegue de Portal Marca Blanca Propio', 'Soporte Técnico Empresarial'] 
     }
   ];
 

@@ -126,14 +126,14 @@ export default function SkinIQDashboard() {
       </div>
 
       {/* Action Area */}
-      <GlassCard className="p-8 mt-8 flex flex-col md:flex-row items-center justify-between bg-[#1A1A1A] text-white border-none relative overflow-hidden">
+      <div className="rounded-3xl p-8 mt-8 flex flex-col md:flex-row items-center justify-between bg-[#1A1A1A] text-white border-none relative overflow-hidden shadow-2xl">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#D4AF37]/20 via-transparent to-transparent pointer-events-none" />
         <div className="mb-6 md:mb-0 relative z-10">
-          <h3 className="font-display font-bold text-2xl mb-2 flex items-center gap-2">
+          <h3 className="font-display font-bold text-2xl mb-2 flex items-center gap-2 text-white">
             <Sparkles className="w-6 h-6 text-[#D4AF37]" />
             Tu Rutina Riman Personalizada
           </h3>
-          <p className="text-white/70 max-w-xl">
+          <p className="text-white/80 max-w-xl">
             Basado en tu Varianza de Pigmentación (82) y necesidad de hidratación, el protocolo BotaLab + EX-Incell restaurará tu barrera cutánea en 14 días.
           </p>
         </div>
@@ -143,7 +143,7 @@ export default function SkinIQDashboard() {
             <ArrowRight className="w-5 h-5" />
           </button>
         </Link>
-      </GlassCard>
+      </div>
 
     </div>
   );
