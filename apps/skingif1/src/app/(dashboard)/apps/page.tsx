@@ -57,6 +57,26 @@ export default async function AppsPage() {
     }
   });
 
+  // SkinIQ / Riman Apps for ALL users in this portal
+  const skinIqDemoApps = [
+    { id: 'd7', slug: 'rutina-gen', name_es: 'Generador de Rutinas IA', description_es: 'Crea rutinas de skincare hiper-personalizadas basadas en los resultados del mapa térmico.', icon: 'Sparkles', category: 'Cuidado Personal' },
+    { id: 'd8', slug: 'ingredients-analyzer', name_es: 'Analizador de Ingredientes', description_es: 'Escanea y analiza los componentes de cualquier producto cosmético en segundos.', icon: 'Search', category: 'Análisis' },
+    { id: 'd9', slug: 'ventas-riman', name_es: 'Asistente de Ventas Riman', description_es: 'Simula conversaciones para ayudarte a cerrar ventas de los sets BotaLab y EX-Incell.', icon: 'MessageCircle', category: 'Ventas' },
+    { id: 'd10', slug: 'progress-sim', name_es: 'Simulador de Progreso', description_es: 'Proyecta visualmente cómo mejorará la piel del cliente en 30, 60 y 90 días.', icon: 'Calendar', category: 'Visualización' },
+  ] as any[];
+
+  const existingSlugsGlobal = new Set((apps || []).map(a => a.slug));
+  const mergedAppsGlobal = [...(apps || [])];
+  
+  skinIqDemoApps.forEach(da => {
+    if (!existingSlugsGlobal.has(da.slug)) {
+      mergedAppsGlobal.push(da);
+      if (!accessibleSlugs.includes(da.slug)) accessibleSlugs.push(da.slug);
+    }
+  });
+  
+  apps = mergedAppsGlobal;
+
   // Para el Admin, siempre mostramos los motores de demo si hay pocos o ninguno en la DB
   if (user.email === ADMIN_EMAIL) {
     const demoApps = [
