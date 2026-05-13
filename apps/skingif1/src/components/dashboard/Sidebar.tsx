@@ -147,6 +147,52 @@ export function Sidebar({ collapsed, onToggleCollapse, mobileOpen, onCloseMobile
             {language === 'en' ? 'Idea Generator' : 'Generador de Ideas'}
           </span>
         </Link>
+        
+        {/* Gamification Link */}
+        <Link 
+          href="/riman/dashboard"
+          onClick={() => onCloseMobile()}
+          className={cn(
+            "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-black transition-all duration-500 group border relative overflow-hidden",
+            pathname === '/riman/dashboard' 
+              ? "bg-[#D4AF37]/20 text-color-base-content border-[#D4AF37]/50 shadow-[0_0_15px_rgba(212,175,55,0.1)] ring-1 ring-[#D4AF37]/20 animate-active-glow" 
+              : "bg-transparent text-color-base-content/60 border-transparent hover:bg-color-base-content/5 hover:text-color-base-content"
+          )}
+        >
+          {pathname === '/riman/dashboard' && (
+            <div className="absolute inset-0 bg-linear-to-br from-[#D4AF37]/20 via-transparent to-transparent pointer-events-none" />
+          )}
+          <LucideIcons.Trophy className={cn(
+            "h-5 w-5 shrink-0 transition-colors",
+            pathname === '/riman/dashboard' ? "text-[#D4AF37]" : "text-color-base-content/40 group-hover:text-color-base-content"
+          )} />
+          <span className={cn("whitespace-nowrap transition-all duration-300", collapsed && "lg:hidden")}>
+            {language === 'en' ? 'Gamification & Hub' : 'Gamificación & Hub'}
+          </span>
+        </Link>
+
+        {/* Community Link */}
+        <Link 
+          href="/riman/dashboard/community"
+          onClick={() => onCloseMobile()}
+          className={cn(
+            "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-black transition-all duration-500 group border relative overflow-hidden",
+            pathname === '/riman/dashboard/community' 
+              ? "bg-purple-500/20 text-color-base-content border-purple-500/50 shadow-[0_0_15px_rgba(168,85,247,0.1)] ring-1 ring-purple-500/20 animate-active-glow" 
+              : "bg-transparent text-color-base-content/60 border-transparent hover:bg-color-base-content/5 hover:text-color-base-content"
+          )}
+        >
+          {pathname === '/riman/dashboard/community' && (
+            <div className="absolute inset-0 bg-linear-to-br from-purple-500/20 via-transparent to-transparent pointer-events-none" />
+          )}
+          <LucideIcons.Users2 className={cn(
+            "h-5 w-5 shrink-0 transition-colors",
+            pathname === '/riman/dashboard/community' ? "text-purple-500" : "text-color-base-content/40 group-hover:text-color-base-content"
+          )} />
+          <span className={cn("whitespace-nowrap transition-all duration-300", collapsed && "lg:hidden")}>
+            {language === 'en' ? 'Community' : 'Comunidad'}
+          </span>
+        </Link>
         <Link 
           href="/apps"
           onClick={() => onCloseMobile()}
