@@ -147,7 +147,7 @@ export default function CapturePage() {
             </div>
 
             {/* Video Feed */}
-            <div className="w-full h-[500px] bg-black relative overflow-hidden">
+            <div className="w-full max-w-[360px] mx-auto h-[540px] bg-black relative overflow-hidden rounded-[3rem] shadow-[0_0_40px_rgba(212,175,55,0.15)] ring-4 ring-[#D4AF37]/20 my-4">
               <video 
                 ref={videoRef} 
                 autoPlay 
@@ -156,13 +156,22 @@ export default function CapturePage() {
                 className="w-full h-full object-cover transform scale-x-[-1]"
               />
               
-              {/* Overlay guidelines based on step */}
-              <div className="absolute inset-0 pointer-events-none border-4 border-dashed border-[#D4AF37]/30 m-8 rounded-3xl" />
+              {/* Oval overlay guideline for face */}
+              <div className="absolute inset-0 pointer-events-none p-6">
+                <div className="w-full h-full border-[3px] border-dashed border-[#D4AF37]/60 rounded-[100%] shadow-[inset_0_0_20px_rgba(0,0,0,0.5)] transition-all duration-1000 animate-pulse-ring" />
+              </div>
+
+              {/* Grid lines for alignment */}
+              <div className="absolute inset-0 pointer-events-none opacity-20">
+                <div className="absolute top-1/3 w-full h-[1px] bg-white" />
+                <div className="absolute top-2/3 w-full h-[1px] bg-white" />
+                <div className="absolute left-1/2 h-full w-[1px] bg-white" />
+              </div>
               
               {/* Countdown overlay */}
               {countdown !== null && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-20">
-                  <span className="text-8xl font-black text-white animate-pulse-ring rounded-full w-40 h-40 flex items-center justify-center bg-[#D4AF37]">
+                <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[2px] z-20">
+                  <span className="text-8xl font-black text-white animate-ping-slow drop-shadow-[0_0_20px_rgba(212,175,55,0.8)]">
                     {countdown}
                   </span>
                 </div>

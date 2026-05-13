@@ -2,10 +2,9 @@
 
 import React from "react";
 import Link from "next/link";
-import { Camera, ArrowRight, UserCircle2, Sparkles, Droplets, ArrowUpCircle, Sun, Activity, Maximize, AlertCircle } from "lucide-react";
+import { Camera, ArrowRight, UserCircle2, Sparkles, Droplets, ArrowUpCircle, Sun, Activity, Maximize, AlertCircle, Bot } from "lucide-react";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { ScoreDial } from "@/components/ui/ScoreDial";
-import { GlowButton } from "@/components/ui/GlowButton";
 
 export default function SkinIQDashboard() {
   const [loading, setLoading] = React.useState(true);
@@ -19,14 +18,14 @@ export default function SkinIQDashboard() {
   }, []);
 
   const scores = [
-    { label: "Skin Health Index™", value: 92, icon: Activity },
-    { label: "Glow Score™", value: 88, icon: Sparkles },
-    { label: "Skin Age Gap™", value: 85, icon: UserCircle2 },
-    { label: "Hydration Level", value: 78, icon: Droplets },
-    { label: "Elasticity Index", value: 90, icon: ArrowUpCircle },
-    { label: "Pigmentation Variance", value: 82, icon: Sun },
-    { label: "Wrinkle Depth", value: 75, icon: AlertCircle },
-    { label: "Pores & Texture", value: 89, icon: Maximize },
+    { label: "Índice de Salud de la Piel™", value: 92, icon: Activity },
+    { label: "Puntuación de Brillo (Glow)™", value: 88, icon: Sparkles },
+    { label: "Brecha de Edad Facial™", value: 85, icon: UserCircle2 },
+    { label: "Nivel de Hidratación", value: 78, icon: Droplets },
+    { label: "Índice de Elasticidad", value: 90, icon: ArrowUpCircle },
+    { label: "Varianza de Pigmentación", value: 82, icon: Sun },
+    { label: "Profundidad de Arrugas", value: 75, icon: AlertCircle },
+    { label: "Poros y Textura", value: 89, icon: Maximize },
   ];
 
   if (loading) {
@@ -45,13 +44,13 @@ export default function SkinIQDashboard() {
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#D4AF37]/10 text-[#D4AF37] text-xs font-bold uppercase tracking-widest rounded-full mb-4">
             <Sparkles className="w-4 h-4" />
-            Premium Analysis
+            Análisis Premium
           </div>
           <h1 className="text-4xl md:text-5xl font-black text-[#1A1A1A] tracking-tight">
-            Tu SkinIQ™ Dashboard
+            Tu Dashboard SkinIQ™
           </h1>
           <p className="text-neutral-600 mt-2 text-lg">
-            Descubre los 8 biomarcadores de tu piel.
+            Descubre los 8 biomarcadores esenciales de tu piel.
           </p>
         </div>
         
@@ -67,8 +66,8 @@ export default function SkinIQDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
         {/* Facial Heatmap / Overview */}
-        <div className="lg:col-span-1">
-          <GlassCard className="h-full flex flex-col items-center justify-center p-8 bg-gradient-to-br from-[#F2E8DF]/80 to-[#EAE0D7]/80">
+        <div className="lg:col-span-1 space-y-6">
+          <GlassCard className="flex flex-col items-center justify-center p-8 bg-gradient-to-br from-[#F2E8DF]/80 to-[#EAE0D7]/80">
             <div className="relative w-full max-w-xs aspect-[3/4] rounded-[3rem] border border-white/40 overflow-hidden shadow-2xl mb-8 group">
               <div className="absolute inset-0 bg-black/5 z-10" />
               {/* Simulated Heatmap Overlay */}
@@ -81,9 +80,33 @@ export default function SkinIQDashboard() {
             </div>
 
             <div className="text-center">
-              <h3 className="font-display font-bold text-2xl text-[#1A1A1A] mb-2">Resumen General</h3>
+              <h3 className="font-display font-bold text-2xl text-[#1A1A1A] mb-2">Mapa Térmico SkinIQ</h3>
               <p className="text-sm text-neutral-600">
-                Tu piel muestra un nivel excepcional de hidratación y un Skin Age Gap™ positivo.
+                Escaneo tridimensional que detecta zonas de estrés oxidativo y pérdida de humedad.
+              </p>
+            </div>
+          </GlassCard>
+
+          {/* AI Diagnostic Explanation */}
+          <GlassCard className="p-6 bg-white border border-[#D4AF37]/20 relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-4 opacity-5">
+              <Bot className="w-24 h-24" />
+            </div>
+            <div className="flex items-center gap-2 mb-4">
+              <div className="bg-[#D4AF37]/20 p-2 rounded-lg text-[#D4AF37]">
+                <Bot className="w-5 h-5" />
+              </div>
+              <h3 className="font-bold text-lg text-[#1A1A1A]">Diagnóstico de la Inteligencia Artificial</h3>
+            </div>
+            <div className="space-y-3 text-sm text-neutral-700 relative z-10 leading-relaxed">
+              <p>
+                Tras analizar más de 12,000 puntos de datos en tu rostro, hemos detectado un <strong>Índice de Elasticidad alto (90)</strong>, lo cual refleja una buena producción de colágeno.
+              </p>
+              <p>
+                Sin embargo, la <strong>Profundidad de Arrugas (75)</strong> y el <strong>Nivel de Hidratación (78)</strong> en la zona periocular (alrededor de los ojos) y la frente indican signos tempranos de deshidratación profunda. 
+              </p>
+              <p className="font-semibold text-[#1A1A1A]">
+                Para alcanzar tu máximo "Glow Score", necesitas un boost de hidratación intensiva a nivel celular.
               </p>
             </div>
           </GlassCard>
@@ -103,17 +126,23 @@ export default function SkinIQDashboard() {
       </div>
 
       {/* Action Area */}
-      <GlassCard className="p-8 mt-8 flex flex-col md:flex-row items-center justify-between bg-[#1A1A1A] text-white border-none">
-        <div className="mb-6 md:mb-0">
-          <h3 className="font-display font-bold text-2xl mb-2">Recomendación Riman</h3>
+      <GlassCard className="p-8 mt-8 flex flex-col md:flex-row items-center justify-between bg-[#1A1A1A] text-white border-none relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#D4AF37]/20 via-transparent to-transparent pointer-events-none" />
+        <div className="mb-6 md:mb-0 relative z-10">
+          <h3 className="font-display font-bold text-2xl mb-2 flex items-center gap-2">
+            <Sparkles className="w-6 h-6 text-[#D4AF37]" />
+            Tu Rutina Riman Personalizada
+          </h3>
           <p className="text-white/70 max-w-xl">
-            Basado en tu Pigmentation Variance (82) y Glow Score (88), el protocolo BotaLab + EX-Incell te dará los mejores resultados en 2 semanas.
+            Basado en tu Varianza de Pigmentación (82) y necesidad de hidratación, el protocolo BotaLab + EX-Incell restaurará tu barrera cutánea en 14 días.
           </p>
         </div>
-        <button className="bg-[#D4AF37] text-[#1A1A1A] font-bold py-4 px-8 rounded-full hover:bg-white transition-colors flex items-center gap-2 shrink-0">
-          Ver Protocolo Completo
-          <ArrowRight className="w-5 h-5" />
-        </button>
+        <Link href="/plans" className="relative z-10">
+          <button className="bg-[#D4AF37] text-[#1A1A1A] font-bold py-4 px-8 rounded-full hover:bg-white transition-colors flex items-center gap-2 shrink-0 shadow-[0_0_20px_rgba(212,175,55,0.3)] hover:shadow-[0_0_30px_rgba(212,175,55,0.5)]">
+            Ver Protocolo Completo
+            <ArrowRight className="w-5 h-5" />
+          </button>
+        </Link>
       </GlassCard>
 
     </div>
