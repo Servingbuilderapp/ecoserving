@@ -57,30 +57,31 @@ export default async function AppsPage() {
     }
   });
 
-  // Para SkinIQ, mostramos las apps de Riman por defecto
-  const demoApps = [
-    { id: 'd1', slug: 'rutina-gen', name_es: 'Generador de Rutinas IA', description_es: 'Crea rutinas de skincare hiper-personalizadas basadas en los resultados del mapa térmico.', icon: 'Sparkles', category: 'Cuidado Personal' },
-    { id: 'd2', slug: 'ingredients-analyzer', name_es: 'Analizador de Ingredientes', description_es: 'Escanea y analiza los componentes de cualquier producto cosmético en segundos.', icon: 'Search', category: 'Análisis' },
-    { id: 'd3', slug: 'ventas-riman', name_es: 'Asistente de Ventas Riman', description_es: 'Simula conversaciones para ayudarte a cerrar ventas de los sets BotaLab y EX-Incell.', icon: 'MessageCircle', category: 'Ventas' },
-    { id: 'd4', slug: 'progress-sim', name_es: 'Simulador de Progreso', description_es: 'Proyecta visualmente cómo mejorará la piel del cliente en 30, 60 y 90 días.', icon: 'Calendar', category: 'Visualización' },
-  ] as any[];
-
-  // Combinar con los de la DB, evitando duplicados por slug
-  const existingSlugs = new Set((apps || []).map(a => a.slug));
-  const mergedApps = [...(apps || [])];
-  
-  demoApps.forEach(da => {
-    if (!existingSlugs.has(da.slug)) {
-      mergedApps.push(da);
-      // Todos pueden verlas en el portal SkinIQ
-      if (!accessibleSlugs.includes(da.slug)) accessibleSlugs.push(da.slug);
-    }
-  });
-  
-  apps = mergedApps;
-
-  // Asegurar que el admin tiene acceso a TODO lo que ve en la lista
+  // Para el Admin, siempre mostramos los motores de demo si hay pocos o ninguno en la DB
   if (user.email === ADMIN_EMAIL) {
+    const demoApps = [
+      { id: 'd1', slug: 'escritor-pro', name_es: 'Escritor Maestro IA', description_es: 'Genera contenido persuasivo y artículos de alta calidad en segundos.', icon: 'PenTool', category: 'Contenido' },
+      { id: 'd2', slug: 'vision-art', name_es: 'Visión Artística 3D', description_es: 'Transforma conceptos simples en imágenes fotorrealistas e impactantes.', icon: 'Sparkles', category: 'Imagen & Video' },
+      { id: 'd3', slug: 'video-gen', name_es: 'Generador de Video Pro', description_es: 'Crea clips cinematográficos a partir de texto con inteligencia cinemática.', icon: 'Video', category: 'Imagen & Video' },
+      { id: 'd4', slug: 'seo-boost', name_es: 'Optimizador SEO Elite', description_es: 'Domina los buscadores con análisis profundo de palabras clave.', icon: 'Zap', category: 'Optimización' },
+      { id: 'd5', slug: 'social-ninja', name_es: 'Social Media Ninja', description_es: 'Automatiza tu presencia en redes sociales con contenido viral.', icon: 'Share2', category: 'Contenido' },
+      { id: 'd6', slug: 'code-wizard', name_es: 'Asistente Code Wizard', description_es: 'Desarrolla aplicaciones y resuelve bugs con lógica de nivel experto.', icon: 'LayoutGrid', category: 'Optimización' },
+    ] as any[];
+
+    // Combinar con los de la DB, evitando duplicados por slug
+    const existingSlugs = new Set((apps || []).map(a => a.slug));
+    const mergedApps = [...(apps || [])];
+    
+    demoApps.forEach(da => {
+      if (!existingSlugs.has(da.slug)) {
+        mergedApps.push(da);
+        if (!accessibleSlugs.includes(da.slug)) accessibleSlugs.push(da.slug);
+      }
+    });
+    
+    apps = mergedApps;
+
+    // Asegurar que el admin tiene acceso a TODO lo que ve en la lista
     apps.forEach(a => {
       if (!accessibleSlugs.includes(a.slug)) accessibleSlugs.push(a.slug);
     });
