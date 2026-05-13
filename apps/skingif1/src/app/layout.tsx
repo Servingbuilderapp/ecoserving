@@ -23,7 +23,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const { headers } = await import('next/headers')
   const headersList = await headers()
   const host = headersList.get('host') || ''
-  const isEcoServing = host.toLowerCase().includes('ecoserving') || host.toLowerCase().includes('localhost')
+  const isEcoServing = false;
 
   return {
     title: "SkinIQ™ | Powered by Skingif1",

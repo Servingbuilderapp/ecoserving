@@ -27,9 +27,7 @@ export function Sidebar({ collapsed, onToggleCollapse, mobileOpen, onCloseMobile
   const [isEcoServing, setIsEcoServing] = useState(true)
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setIsEcoServing(window.location.hostname.includes('ecoserving') || window.location.hostname.includes('localhost'))
-    }
+    setIsEcoServing(false);
   }, [])
   
   const currentEmail = (profile?.email || user?.email || '').toLowerCase().trim()
