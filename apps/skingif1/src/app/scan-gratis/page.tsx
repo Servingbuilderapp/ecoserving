@@ -202,7 +202,7 @@ export default function FreeScanLeadMagnet() {
             </h2>
             
             <p className="text-neutral-400 text-lg leading-relaxed">
-              Nuestro motor clínico analiza 8 biomarcadores de tu piel usando Inteligencia Artificial. Obtén tu diagnóstico premium y descubre tu rutina ideal.
+              Nuestro motor clínico analiza 4 variables críticas de tu piel usando Inteligencia Artificial. Obtén tu resumen ejecutivo flash y descubre tu rutina ideal.
             </p>
 
             <form onSubmit={handleLeadSubmit} className="bg-[#111] border border-neutral-800 p-8 rounded-3xl space-y-6 text-left shadow-2xl">
