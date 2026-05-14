@@ -40,6 +40,9 @@ export function Footer() {
       </div>
       
       <div className="text-center space-y-1">
+        <p className="text-[10px] sm:text-xs text-color-base-content/70 max-w-2xl mx-auto leading-relaxed mb-4 italic px-4">
+          SkinIQ™ es una herramienta de orientación estética basada en inteligencia artificial. Los resultados son referenciales y no constituyen un diagnóstico, tratamiento o consejo médico. Consulte siempre a su dermatólogo.
+        </p>
         <p className="text-[10px] sm:text-xs font-black text-color-base-content/ tracking-widest uppercase italic">
           © 2026 <span className="text-color-primary">SERVING PROYECTOS ESTRATEGICOS SAS</span>. 
           {language === 'en' ? ' All rights reserved.' : ' Todos los derechos reservados.'}

@@ -25,6 +25,7 @@ export default function FreeScanLeadMagnet() {
   // Lead Data
   const [lead, setLead] = useState({ nombre: "", email: "", telefono: "" });
   const [isSavingLead, setIsSavingLead] = useState(false);
+  const [aceptaPoliticas, setAceptaPoliticas] = useState(false);
 
   // Images
   const [images, setImages] = useState<string[]>([]); // 0: front, 1: left, 2: right
@@ -217,7 +218,14 @@ export default function FreeScanLeadMagnet() {
                 </div>
               </div>
               
-              <button disabled={isSavingLead} type="submit" className="w-full bg-[#D4AF37] hover:bg-white text-black font-bold text-lg py-4 rounded-xl flex justify-center items-center gap-2 transition-all shadow-[0_0_20px_rgba(212,175,55,0.2)] hover:shadow-[0_0_30px_rgba(212,175,55,0.4)] disabled:opacity-50">
+              <div className="flex items-start gap-3 mt-4">
+                <input required type="checkbox" id="habeasData" checked={aceptaPoliticas} onChange={e => setAceptaPoliticas(e.target.checked)} className="mt-1 w-4 h-4 accent-[#D4AF37]" />
+                <label htmlFor="habeasData" className="text-xs text-neutral-400 leading-tight cursor-pointer">
+                  Acepto la Política de Privacidad y el tratamiento de mis datos para fines de asesoría estética
+                </label>
+              </div>
+              
+              <button disabled={isSavingLead || !aceptaPoliticas} type="submit" className="w-full bg-[#D4AF37] hover:bg-white text-black font-bold text-lg py-4 rounded-xl flex justify-center items-center gap-2 transition-all shadow-[0_0_20px_rgba(212,175,55,0.2)] hover:shadow-[0_0_30px_rgba(212,175,55,0.4)] disabled:opacity-50">
                 {isSavingLead ? <Loader2 className="w-6 h-6 animate-spin" /> : "Iniciar Escáner Gratis"} <ArrowRight className="w-5 h-5" />
               </button>
             </form>
@@ -333,6 +341,13 @@ export default function FreeScanLeadMagnet() {
         )}
 
       </main>
+
+      {/* GLOBAL FOOTER DISCLAIMER */}
+      <footer className="p-6 text-center border-t border-white/5 mt-auto">
+        <p className="text-xs text-neutral-500 max-w-3xl mx-auto leading-relaxed">
+          SkinIQ™ es una herramienta de orientación estética basada en inteligencia artificial. Los resultados son referenciales y no constituyen un diagnóstico, tratamiento o consejo médico. Consulte siempre a su dermatólogo.
+        </p>
+      </footer>
     </div>
   );
 }

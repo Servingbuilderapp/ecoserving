@@ -30,14 +30,14 @@ export async function POST(req: Request) {
         {
           parts: [
             {
-              text: `Actúa como un Dermatólogo Científico Experto de la multinacional K-Beauty RIMAN. Analiza las siguientes 3 imágenes (Frontal, Perfil Izquierdo, Perfil Derecho) de un rostro humano.
-Evalúa del 1 al 100 las siguientes 4 variables clínicas y proporciona una justificación concisa de alto impacto (1-2 oraciones) para cada una:
-1. edad_facial (brecha de edad positiva, 100 es mejor)
-2. brillo (Glow Score, luminosidad)
-3. hidratacion (Hydration Level)
-4. carga_estres (Skin Stress Load, donde 1 es mucho estrés/fatiga y 100 es piel súper relajada y saludable)
+              text: `Actúa como un Dermatólogo Científico Experto de la multinacional K-Beauty RIMAN. Analiza rápido las 3 imágenes del rostro.
+Genera un diagnóstico Flash de alto impacto emocional y comercial en formato JSON.
+1. edad_facial (Skin Age Gap™): Calcula la brecha. Justificación impactante.
+2. brillo (Glow Score™): Nivel de luminosidad. Justificación aspiracional.
+3. hidratacion: Nivel de retención de agua.
+4. carga_estres: Nivel de fatiga.
 
-Devuelve ESTRICTAMENTE UN OBJETO JSON VÁLIDO con esta estructura exacta. NO incluyas markdown, NO backticks:
+Devuelve ESTRICTAMENTE UN OBJETO JSON VÁLIDO. Hazlo rápido (max 150 palabras). NO markdown.
 {
   "edad_facial": { "score": 85, "justificacion": "..." },
   "brillo": { "score": 88, "justificacion": "..." },
@@ -55,7 +55,7 @@ Devuelve ESTRICTAMENTE UN OBJETO JSON VÁLIDO con esta estructura exacta. NO inc
         temperature: 0.4,
         topK: 32,
         topP: 1,
-        maxOutputTokens: 4096,
+        maxOutputTokens: 300,
         responseMimeType: "application/json"
       }
     };
