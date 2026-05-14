@@ -49,7 +49,7 @@ const translations = {
     modal_pro_btn: "Hacer Upgrade ahora ($49/mes)",
     close: "Cerrar",
     link_mall: "Tu Mall Riman",
-    link_join: "Afiliar Socios",
+    link_join: "WijeX",
     copy_scanner: "Copiar Enlace Escáner",
     hub_title: "Hub de Aplicaciones (70+ Módulos)",
     hub_desc: "Desliza horizontalmente. Las Apps PRO requieren suscripción.",
@@ -366,6 +366,10 @@ export default function RimanHub() {
               <p className="text-neutral-400 font-bold uppercase tracking-widest">{userRewards.title} - Rango {userRewards.level}</p>
             </div>
             
+            <div className="relative z-10 mt-6 bg-black/30 border border-[#D4AF37]/20 p-4 rounded-xl text-sm text-neutral-400">
+              <p><strong className="text-white">¿Cómo subir de rango?</strong> Acumula XP completando Retos. Al escanear clientes, educarte en la Academia y cerrar ventas, subirás de nivel desbloqueando <strong>Master Apps PRO</strong>.</p>
+            </div>
+
             <div className="relative z-10 mt-8 flex flex-col gap-4">
               <div className="flex justify-between text-lg font-bold">
                 <span>{userRewards.xp} XP</span>
@@ -412,8 +416,8 @@ export default function RimanHub() {
               <ShoppingBag className="w-6 h-6" /> {t.link_mall}
             </a>
             
-            <a href={`https://us.riman.com/sign-up?referrer=${planner?.id_skingif}`} target="_blank" rel="noopener noreferrer" className="w-full bg-blue-600 text-white font-black py-4 rounded-2xl flex items-center justify-center gap-3 hover:bg-blue-700 transition-colors">
-              <Users className="w-6 h-6" /> {t.link_join}
+            <a href="https://webcard.superappwijex.com/webcard-1/?id=adrigonzito64@gmail.com" target="_blank" rel="noopener noreferrer" className="w-full bg-[#25D366] text-white font-black py-4 rounded-2xl flex items-center justify-center gap-3 hover:bg-[#128C7E] transition-colors shadow-lg">
+              <MessageSquare className="w-6 h-6" /> {t.link_join}
             </a>
 
             <button onClick={copyScannerLink} className="w-full bg-[#D4AF37] text-black font-black py-4 rounded-2xl flex items-center justify-center gap-3 hover:scale-105 transition-transform">

@@ -148,7 +148,7 @@ export default function GlobalCalculator() {
             </>
           ) : (
             <>
-              <h2 className="text-xl font-bold border-b border-neutral-800 pb-4 flex items-center gap-2"><Wallet className="w-5 h-5 text-[#3b82f6]"/> Datos Conectados al CRM</h2>
+              <h2 className="text-xl font-bold border-b border-neutral-800 pb-4 flex items-center gap-2"><Wallet className="w-5 h-5 text-[#3b82f6]"/> Billetera y Ranking SkinIQ</h2>
               {loadingReal ? (
                 <div className="flex flex-col items-center justify-center py-10">
                   <Loader2 className="w-8 h-8 text-[#3b82f6] animate-spin mb-4" />
@@ -156,22 +156,40 @@ export default function GlobalCalculator() {
                 </div>
               ) : (
                 <div className="space-y-6">
-                  <div className="bg-neutral-900 border border-neutral-800 p-5 rounded-2xl flex justify-between items-center">
-                    <div>
-                      <p className="text-sm text-neutral-400">Ventas Cerradas (Este Mes)</p>
-                      <p className="text-2xl font-black text-white">{realSales}</p>
+                  {/* GAMIFICATION & XP BLOCK IN CALCULATOR */}
+                  <div className="bg-[#D4AF37]/5 border border-[#D4AF37]/20 p-5 rounded-2xl flex flex-col gap-3 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-4 opacity-10">
+                      <TrendingUp className="w-24 h-24 text-[#D4AF37]" />
                     </div>
-                    <ShoppingBag className="w-8 h-8 text-[#D4AF37] opacity-20" />
+                    <div className="relative z-10 flex justify-between items-end">
+                      <div>
+                        <p className="text-sm font-bold text-[#D4AF37] uppercase tracking-widest mb-1">Rango Actual: Planner Avanzado</p>
+                        <p className="text-3xl font-black text-white">1,250 <span className="text-lg text-neutral-400">XP Totales</span></p>
+                      </div>
+                    </div>
+                    <div className="relative z-10 bg-black/40 p-3 rounded-xl border border-white/5">
+                      <p className="text-xs text-neutral-300">Te faltan <strong className="text-[#D4AF37]">750 XP</strong> para ascender a <strong>Jeju Master</strong>. Continúa cerrando ventas y usando el Escáner Facial para obtener más comisiones y desbloquear Master Apps PRO.</p>
+                    </div>
                   </div>
-                  <div className="bg-neutral-900 border border-neutral-800 p-5 rounded-2xl flex justify-between items-center">
-                    <div>
-                      <p className="text-sm text-neutral-400">Planners Activos en tu Red</p>
-                      <p className="text-2xl font-black text-white">{realPlanners}</p>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-neutral-900 border border-neutral-800 p-5 rounded-2xl flex flex-col justify-between">
+                      <p className="text-sm text-neutral-400 mb-2">Ventas Cerradas</p>
+                      <div className="flex items-center justify-between">
+                        <p className="text-2xl font-black text-white">{realSales}</p>
+                        <ShoppingBag className="w-6 h-6 text-[#D4AF37] opacity-40" />
+                      </div>
                     </div>
-                    <Users className="w-8 h-8 text-[#3b82f6] opacity-20" />
+                    <div className="bg-neutral-900 border border-neutral-800 p-5 rounded-2xl flex flex-col justify-between">
+                      <p className="text-sm text-neutral-400 mb-2">Planners en Red</p>
+                      <div className="flex items-center justify-between">
+                        <p className="text-2xl font-black text-white">{realPlanners}</p>
+                        <Users className="w-6 h-6 text-[#3b82f6] opacity-40" />
+                      </div>
+                    </div>
                   </div>
                   <div className="bg-blue-500/10 border border-blue-500/20 p-4 rounded-xl">
-                    <p className="text-xs text-blue-400 leading-relaxed">Estos datos se actualizan automáticamente cuando registras un Cierre en tu CRM o cuando un nuevo Planner activa su suscripción SaaS de $12 USD usando tu enlace de réplica.</p>
+                    <p className="text-xs text-blue-400 leading-relaxed">Estos datos se actualizan automáticamente al registrar un Cierre en tu CRM o cuando un nuevo Planner se une con tu enlace.</p>
                   </div>
                 </div>
               )}
