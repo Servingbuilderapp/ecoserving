@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Camera, Upload, ArrowRight, Brain, Sparkles, ShieldCheck, CheckCircle2, ChevronRight, XCircle, Loader2, Droplets, Activity, Zap } from "lucide-react";
 
@@ -37,12 +37,12 @@ export default function FreeScanLeadMagnet() {
   const [error, setError] = useState<string | null>(null);
 
   // Setup ref on mount
-  import("react").then((React) => {
-    React.useEffect(() => {
+  useEffect(() => {
+    if (typeof window !== "undefined") {
       const search = new URLSearchParams(window.location.search);
       setRefParam(search.get("ref")?.toLowerCase() || "organic");
-    }, []);
-  });
+    }
+  }, []);
 
   // START CAMERA
   const startCamera = async () => {
