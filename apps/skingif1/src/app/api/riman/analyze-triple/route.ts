@@ -18,11 +18,11 @@ export async function POST(req: Request) {
       console.warn("⚠️ Advertencia: GEMINI_KEY no encontrada. Usando mock provisorio.");
       await new Promise(r => setTimeout(r, 2500));
       return NextResponse.json({
-        "arquetipo": "Glass Skin Protégé",
-        "edad_facial": { "score": 90, "justificacion": "Tu piel refleja vitalidad y firmeza, restando años a tu edad cronológica." },
-        "brillo": { "score": 85, "justificacion": "Buena retención de luz, aunque puedes potenciar ese 'Glow' coreano." },
-        "hidratacion": { "score": 72, "justificacion": "Tu barrera cutánea necesita agua para evitar la pérdida transepidérmica." },
-        "carga_estres": { "score": 45, "justificacion": "Detectamos signos de fatiga y estrés oxidativo en el contorno facial." }
+        "arquetipo_id": "glow_seeker",
+        "barrera": { "score": 82, "justificacion": "Tu barrera cutánea retiene hidratación de forma aceptable." },
+        "glow": { "score": 98, "justificacion": "Alta tasa de renovación celular; proyectas una luz interna." },
+        "estres": { "score": 75, "justificacion": "Leves signos de estrés oxidativo en el contorno." },
+        "resiliencia": { "score": 80, "justificacion": "Buena capacidad de recuperación post-exposición ambiental." }
       });
     }
 
@@ -33,19 +33,19 @@ export async function POST(req: Request) {
             {
               text: `Actúa como un Dermatólogo Científico Experto de la multinacional K-Beauty RIMAN. Analiza rápido las 3 imágenes del rostro.
 Genera un diagnóstico Flash de alto impacto emocional y comercial en formato JSON.
-1. arquetipo: Asigna un arquetipo K-Beauty (ej. 'Glass Skin Protégé', 'Porcelain Queen', etc) de máximo 3 palabras.
-2. edad_facial (Skin Age Gap™): Calcula la brecha. Justificación impactante.
-3. brillo (Glow Score™): Nivel de luminosidad. Justificación aspiracional.
-4. hidratacion: Nivel de retención de agua.
-5. carga_estres: Nivel de fatiga.
+1. arquetipo_id: Selecciona el ID EXACTO del arquetipo que mejor encaje de esta lista: barrier_guardian, glow_seeker, overworked_glow, velvet_barrier, skin_minimalist, urban_shield, circadian_dreamer, formula_scholar, active_reset, bio_alchemist, longevity_visionary, restorative_aura, equilibrium_type, glass_skin_potential, velvet_shield.
+2. barrera (Barrier Health): Calcula % de salud de la barrera cutánea. Justificación impactante.
+3. glow (Luminosity): Nivel de luminosidad y renovación celular. Justificación aspiracional.
+4. estres (Stress Load): Nivel de impacto de cortisol y fatiga.
+5. resiliencia (Recovery): Capacidad de la piel para recuperarse.
 
 Devuelve ESTRICTAMENTE UN OBJETO JSON VÁLIDO. Hazlo rápido (max 150 palabras). NO markdown.
 {
-  "arquetipo": "...",
-  "edad_facial": { "score": 85, "justificacion": "..." },
-  "brillo": { "score": 88, "justificacion": "..." },
-  "hidratacion": { "score": 78, "justificacion": "..." },
-  "carga_estres": { "score": 90, "justificacion": "..." }
+  "arquetipo_id": "glow_seeker",
+  "barrera": { "score": 85, "justificacion": "..." },
+  "glow": { "score": 88, "justificacion": "..." },
+  "estres": { "score": 78, "justificacion": "..." },
+  "resiliencia": { "score": 90, "justificacion": "..." }
 }`
             },
             { inline_data: { mime_type: "image/jpeg", data: imagesData[0] } },

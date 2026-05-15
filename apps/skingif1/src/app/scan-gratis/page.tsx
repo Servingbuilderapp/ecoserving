@@ -2,7 +2,8 @@
 
 import { useState, useRef, useCallback, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { Camera, Upload, ArrowRight, Brain, Sparkles, ShieldCheck, CheckCircle2, ChevronRight, XCircle, Loader2, Droplets, Activity, Zap } from "lucide-react";
+import { Camera, Upload, ArrowRight, Brain, Sparkles, ShieldCheck, CheckCircle2, ChevronRight, XCircle, Loader2, Droplets, Activity, Zap, Share2 } from "lucide-react";
+import { ARCHETYPES } from "@/lib/archetypes";
 
 type ScannerStep = "start" | "lead" | "capture_front" | "capture_left" | "capture_right" | "analyzing" | "results";
 
@@ -12,11 +13,11 @@ interface DiagnosticResult {
 }
 
 interface DiagnosticScores {
-  arquetipo: string;
-  edad_facial: DiagnosticResult;
-  brillo: DiagnosticResult;
-  hidratacion: DiagnosticResult;
-  carga_estres: DiagnosticResult;
+  arquetipo_id: string;
+  barrera: DiagnosticResult;
+  glow: DiagnosticResult;
+  estres: DiagnosticResult;
+  resiliencia: DiagnosticResult;
 }
 
 export default function FreeScanLeadMagnet() {
@@ -174,6 +175,23 @@ export default function FreeScanLeadMagnet() {
   const forceWhatsapp = refParam === "gonzalo";
   const whatsappLink = `https://wa.me/573227008727?text=${whatsappMsg}`; // Default gonzalo's number for forceWhatsapp
 
+  const handleShare = async () => {
+    if (navigator.share && diagnostic && ARCHETYPES[diagnostic.arquetipo_id]) {
+      const arch = ARCHETYPES[diagnostic.arquetipo_id];
+      try {
+        await navigator.share({
+          title: "Mi SkinIQ™ Arquetipo",
+          text: `Acabo de descubrir que soy un ${arch.name} en SkinIQ. ¡Descubre tu arquetipo aquí!`,
+          url: window.location.href,
+        });
+      } catch (err) {
+        console.log("Compartir cancelado o error", err);
+      }
+    } else {
+      alert("La función de compartir no está disponible en este navegador. ¡Toma un pantallazo!");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#050505] font-sans selection:bg-[#D4AF37] selection:text-black">
       {/* HEADER */}
@@ -302,45 +320,66 @@ export default function FreeScanLeadMagnet() {
           </div>
         )}
 
-        {/* STEP 4: RESULTS FLASH */}
-        {step === "results" && diagnostic && (
-          <div className="animate-in slide-in-from-bottom-8 duration-700 max-w-2xl mx-auto w-full text-black">
+        {/* STEP 4: RESULTS FLASH (SPOTIFY WRAPPED STYLE) */}
+        {step === "results" && diagnostic && ARCHETYPES[diagnostic.arquetipo_id] && (
+          <div className="animate-in slide-in-from-bottom-8 duration-700 max-w-md mx-auto w-full text-black">
             
-            <div className="text-center mb-10 text-white">
-              <div className="inline-flex items-center gap-2 bg-[#D4AF37]/10 text-[#D4AF37] px-4 py-2 rounded-full text-sm font-bold border border-[#D4AF37]/20 mb-4 shadow-[0_0_15px_rgba(212,175,55,0.2)]">
-                <ShieldCheck className="w-4 h-4" /> Diagnóstico Flash Completado
-              </div>
-              <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-2 text-[#D4AF37] drop-shadow-[0_0_10px_rgba(212,175,55,0.5)]">
-                {diagnostic.arquetipo || "SkinIQ™ Expert"}
-              </h2>
-              <p className="text-neutral-400 text-lg font-medium">Análisis de {lead.nombre}</p>
-            </div>
-
-            <div className="space-y-4">
-              {[
-                { label: "Skin Age Gap™", data: diagnostic.edad_facial, icon: Zap },
-                { label: "Glow Score™", data: diagnostic.brillo, icon: Sparkles },
-                { label: "Hydration Level™", data: diagnostic.hidratacion, icon: Droplets },
-                { label: "Skin Stress Load™", data: diagnostic.carga_estres, icon: Activity },
-              ].map((item, idx) => (
-                <div key={idx} className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-6 flex flex-col md:flex-row items-center md:items-start gap-4 animate-in slide-in-from-bottom-4" style={{ animationDelay: `${idx * 200}ms`, animationFillMode: "both" }}>
-                  <div className="bg-gradient-to-br from-[#D4AF37] to-[#F3E5AB] p-4 rounded-2xl shadow-lg shrink-0 text-black">
-                    <item.icon className="w-8 h-8" />
-                  </div>
-                  <div className="text-center md:text-left flex-1">
-                    <h3 className="text-lg font-bold text-white mb-1">{item.label}</h3>
-                    <p className="text-neutral-300 text-sm italic">"{item.data.justificacion}"</p>
-                  </div>
-                  <div className="flex items-center justify-center bg-black/40 px-6 py-4 rounded-2xl border border-white/5 shadow-inner shrink-0 w-full md:w-auto mt-4 md:mt-0">
-                    <span className="text-3xl font-black text-[#D4AF37]">{item.data.score}</span>
-                    <span className="text-neutral-500 text-sm ml-1">/100</span>
-                  </div>
+            {/* WRAPPED CARD */}
+            <div 
+              className="relative rounded-[2rem] p-8 text-white overflow-hidden shadow-2xl mb-8"
+              style={{
+                background: `linear-gradient(135deg, ${ARCHETYPES[diagnostic.arquetipo_id].visual_aesthetics.colors[0]}, ${ARCHETYPES[diagnostic.arquetipo_id].visual_aesthetics.colors[1] || '#000'})`
+              }}
+            >
+              <div className="absolute inset-0 bg-black/20 backdrop-blur-[2px]"></div>
+              
+              <div className="relative z-10 flex flex-col h-full">
+                <div className="flex justify-between items-center mb-8">
+                  <span className="font-black tracking-tighter text-xl">Skin<span className="text-[#D4AF37]">IQ</span>™</span>
+                  <span className="text-xs font-bold uppercase tracking-widest bg-white/20 px-3 py-1 rounded-full backdrop-blur-md">2026 Wrapped</span>
                 </div>
-              ))}
+
+                <div className="mb-10 text-center">
+                  <p className="text-sm font-medium mb-2 uppercase tracking-widest text-white/80">Tu Arquetipo de Identidad</p>
+                  <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-2 drop-shadow-lg leading-none">
+                    {ARCHETYPES[diagnostic.arquetipo_id].name}
+                  </h2>
+                  <p className="text-white/90 text-lg font-medium">"{ARCHETYPES[diagnostic.arquetipo_id].label}"</p>
+                </div>
+
+                <div className="space-y-3 mb-8">
+                  {[
+                    { label: "Barrier Health", data: diagnostic.barrera, icon: ShieldCheck },
+                    { label: "Luminosity", data: diagnostic.glow, icon: Sparkles },
+                    { label: "Stress Load", data: diagnostic.estres, icon: Activity },
+                    { label: "Recovery", data: diagnostic.resiliencia, icon: Zap },
+                  ].map((item, idx) => (
+                    <div key={idx} className="bg-black/30 backdrop-blur-md rounded-2xl p-4 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <item.icon className="w-5 h-5 text-white/80" />
+                        <span className="font-bold">{item.label}</span>
+                      </div>
+                      <span className="font-black text-xl">{item.data.score}%</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-auto pt-6 border-t border-white/20 text-center">
+                  <p className="text-sm font-medium italic text-white/90 mb-4">
+                    "{diagnostic.glow.justificacion}"
+                  </p>
+                  <button 
+                    onClick={handleShare}
+                    className="w-full bg-white text-black font-black py-4 rounded-xl flex justify-center items-center gap-2 hover:scale-[1.02] transition-transform"
+                  >
+                    <Share2 className="w-5 h-5" /> Compartir en Stories
+                  </button>
+                </div>
+              </div>
             </div>
 
             {/* HOOK & ACTION */}
-            <div className="mt-12 text-center animate-in fade-in duration-1000" style={{ animationDelay: "1000ms", animationFillMode: "both" }}>
+            <div className="mt-8 text-center animate-in fade-in duration-1000" style={{ animationDelay: "500ms", animationFillMode: "both" }}>
               <p className="text-white text-lg font-medium mb-8 leading-relaxed px-4">
                 Este es tu análisis rápido. Para obtener tu diagnóstico profundo de 30 variables y tu rutina personalizada, únete a nuestra comunidad privada.
               </p>
