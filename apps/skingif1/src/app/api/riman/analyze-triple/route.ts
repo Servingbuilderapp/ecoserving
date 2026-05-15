@@ -18,6 +18,7 @@ export async function POST(req: Request) {
       console.warn("⚠️ Advertencia: GEMINI_KEY no encontrada. Usando mock provisorio.");
       await new Promise(r => setTimeout(r, 2500));
       return NextResponse.json({
+        "arquetipo": "Glass Skin Protégé",
         "edad_facial": { "score": 90, "justificacion": "Tu piel refleja vitalidad y firmeza, restando años a tu edad cronológica." },
         "brillo": { "score": 85, "justificacion": "Buena retención de luz, aunque puedes potenciar ese 'Glow' coreano." },
         "hidratacion": { "score": 72, "justificacion": "Tu barrera cutánea necesita agua para evitar la pérdida transepidérmica." },
@@ -32,13 +33,15 @@ export async function POST(req: Request) {
             {
               text: `Actúa como un Dermatólogo Científico Experto de la multinacional K-Beauty RIMAN. Analiza rápido las 3 imágenes del rostro.
 Genera un diagnóstico Flash de alto impacto emocional y comercial en formato JSON.
-1. edad_facial (Skin Age Gap™): Calcula la brecha. Justificación impactante.
-2. brillo (Glow Score™): Nivel de luminosidad. Justificación aspiracional.
-3. hidratacion: Nivel de retención de agua.
-4. carga_estres: Nivel de fatiga.
+1. arquetipo: Asigna un arquetipo K-Beauty (ej. 'Glass Skin Protégé', 'Porcelain Queen', etc) de máximo 3 palabras.
+2. edad_facial (Skin Age Gap™): Calcula la brecha. Justificación impactante.
+3. brillo (Glow Score™): Nivel de luminosidad. Justificación aspiracional.
+4. hidratacion: Nivel de retención de agua.
+5. carga_estres: Nivel de fatiga.
 
 Devuelve ESTRICTAMENTE UN OBJETO JSON VÁLIDO. Hazlo rápido (max 150 palabras). NO markdown.
 {
+  "arquetipo": "...",
   "edad_facial": { "score": 85, "justificacion": "..." },
   "brillo": { "score": 88, "justificacion": "..." },
   "hidratacion": { "score": 78, "justificacion": "..." },

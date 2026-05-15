@@ -4,7 +4,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Camera, Upload, ArrowRight, Brain, Sparkles, ShieldCheck, CheckCircle2, ChevronRight, XCircle, Loader2, Droplets, Activity, Zap } from "lucide-react";
 
-type ScannerStep = "lead" | "capture_front" | "capture_left" | "capture_right" | "analyzing" | "results";
+type ScannerStep = "start" | "lead" | "capture_front" | "capture_left" | "capture_right" | "analyzing" | "results";
 
 interface DiagnosticResult {
   score: number;
@@ -12,6 +12,7 @@ interface DiagnosticResult {
 }
 
 interface DiagnosticScores {
+  arquetipo: string;
   edad_facial: DiagnosticResult;
   brillo: DiagnosticResult;
   hidratacion: DiagnosticResult;
@@ -20,7 +21,7 @@ interface DiagnosticScores {
 
 export default function FreeScanLeadMagnet() {
   const supabase = createClient();
-  const [step, setStep] = useState<ScannerStep>("lead");
+  const [step, setStep] = useState<ScannerStep>("start");
   
   // Lead Data
   const [lead, setLead] = useState({ nombre: "", email: "", telefono: "" });
@@ -83,13 +84,11 @@ export default function FreeScanLeadMagnet() {
         referred_by: refParam
       });
       
-      setStep("capture_front");
-      startCamera();
+      setStep("results");
     } catch (err) {
       console.error(err);
       // Proceed anyway so the user doesn't get blocked
-      setStep("capture_front");
-      startCamera();
+      setStep("results");
     } finally {
       setIsSavingLead(false);
     }
@@ -157,7 +156,7 @@ export default function FreeScanLeadMagnet() {
       if (!res.ok) throw new Error(data.error || "Error analizando");
       
       setDiagnostic(data);
-      setStep("results");
+      setStep("lead");
     } catch (err: any) {
       setError(err.message);
       setStep("capture_front");
@@ -171,14 +170,9 @@ export default function FreeScanLeadMagnet() {
 
   const currentCaptureIndex = step === "capture_front" ? 0 : step === "capture_left" ? 1 : 2;
 
-  let whatsappLink = "https://wa.me/573227008727?text=Hola!_Vi_tu_esc%C3%A1ner_SkinIQ_y_quiero_mi_regalo."; // default
-  
-  const msg = "Hola!_Vi_tu_esc%C3%A1ner_SkinIQ_y_quiero_mi_regalo.";
-  if (refParam === "gonzalo") whatsappLink = `https://wa.me/573227008727?text=${msg}`;
-  else if (refParam === "laura") whatsappLink = `https://wa.me/573102952495?text=${msg}`;
-  else if (refParam === "camila") whatsappLink = `https://wa.me/573014313175?text=${msg}`;
-  else if (refParam === "karen") whatsappLink = `https://wa.me/573192086270?text=${msg}`;
-  else if (refParam === "oscar") whatsappLink = `https://wa.me/573115338408?text=${msg}`;
+  const whatsappMsg = "Hola!_Vi_tu_esc%C3%A1ner_SkinIQ_y_quiero_mi_regalo.";
+  const forceWhatsapp = refParam === "gonzalo";
+  const whatsappLink = `https://wa.me/573227008727?text=${whatsappMsg}`; // Default gonzalo's number for forceWhatsapp
 
   return (
     <div className="min-h-screen bg-[#050505] font-sans selection:bg-[#D4AF37] selection:text-black">
@@ -191,8 +185,8 @@ export default function FreeScanLeadMagnet() {
 
       <main className="max-w-6xl mx-auto p-4 py-12">
 
-        {/* STEP 1: LEAD MAGNET */}
-        {step === "lead" && (
+        {/* STEP 1: START SCREEN */}
+        {step === "start" && (
           <div className="max-w-xl mx-auto text-center space-y-8 animate-in fade-in zoom-in duration-700">
             <div className="inline-flex items-center gap-2 bg-[#D4AF37]/10 text-[#D4AF37] px-4 py-2 rounded-full text-sm font-bold border border-[#D4AF37]/20">
               <Sparkles className="w-4 h-4" /> Escáner Facial con IA
@@ -204,6 +198,27 @@ export default function FreeScanLeadMagnet() {
             
             <p className="text-neutral-400 text-lg leading-relaxed">
               Nuestro motor clínico analiza 4 variables críticas de tu piel usando Inteligencia Artificial. Obtén tu resumen ejecutivo flash y descubre tu rutina ideal.
+            </p>
+
+            <button onClick={() => { setStep("capture_front"); startCamera(); }} className="w-full bg-[#D4AF37] hover:bg-white text-black font-bold text-lg py-4 rounded-xl flex justify-center items-center gap-2 transition-all shadow-[0_0_20px_rgba(212,175,55,0.2)] hover:shadow-[0_0_30px_rgba(212,175,55,0.4)]">
+              Iniciar Escáner Gratis <Camera className="w-5 h-5" />
+            </button>
+          </div>
+        )}
+
+        {/* STEP 4: LEAD MAGNET (PEAJE) */}
+        {step === "lead" && (
+          <div className="max-w-xl mx-auto text-center space-y-8 animate-in fade-in zoom-in duration-700">
+            <div className="inline-flex items-center gap-2 bg-green-500/10 text-green-400 px-4 py-2 rounded-full text-sm font-bold border border-green-500/20">
+              <CheckCircle2 className="w-4 h-4" /> Análisis Completado
+            </div>
+            
+            <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight leading-tight">
+              Tu Diagnóstico está Listo
+            </h2>
+            
+            <p className="text-neutral-400 text-lg leading-relaxed">
+              Hemos generado tu Arquetipo K-Beauty y tus resultados exactos. Ingresa tu correo para revelarlos y recibir tu Guía de Regalo en PDF.
             </p>
 
             <form onSubmit={handleLeadSubmit} className="bg-[#111] border border-neutral-800 p-8 rounded-3xl space-y-6 text-left shadow-2xl">
@@ -226,7 +241,7 @@ export default function FreeScanLeadMagnet() {
               </div>
               
               <button disabled={isSavingLead || !aceptaPoliticas} type="submit" className="w-full bg-[#D4AF37] hover:bg-white text-black font-bold text-lg py-4 rounded-xl flex justify-center items-center gap-2 transition-all shadow-[0_0_20px_rgba(212,175,55,0.2)] hover:shadow-[0_0_30px_rgba(212,175,55,0.4)] disabled:opacity-50">
-                {isSavingLead ? <Loader2 className="w-6 h-6 animate-spin" /> : "Iniciar Escáner Gratis"} <ArrowRight className="w-5 h-5" />
+                {isSavingLead ? <Loader2 className="w-6 h-6 animate-spin" /> : "Revelar Mis Resultados"} <ArrowRight className="w-5 h-5" />
               </button>
             </form>
           </div>
@@ -295,7 +310,9 @@ export default function FreeScanLeadMagnet() {
               <div className="inline-flex items-center gap-2 bg-[#D4AF37]/10 text-[#D4AF37] px-4 py-2 rounded-full text-sm font-bold border border-[#D4AF37]/20 mb-4 shadow-[0_0_15px_rgba(212,175,55,0.2)]">
                 <ShieldCheck className="w-4 h-4" /> Diagnóstico Flash Completado
               </div>
-              <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-2">SkinIQ™ Resumen Ejecutivo</h2>
+              <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-2 text-[#D4AF37] drop-shadow-[0_0_10px_rgba(212,175,55,0.5)]">
+                {diagnostic.arquetipo || "SkinIQ™ Expert"}
+              </h2>
               <p className="text-neutral-400 text-lg font-medium">Análisis de {lead.nombre}</p>
             </div>
 
@@ -328,14 +345,23 @@ export default function FreeScanLeadMagnet() {
                 Este es tu análisis rápido. Para obtener tu diagnóstico profundo de 30 variables y tu rutina personalizada, únete a nuestra comunidad privada.
               </p>
               
-              <a 
-                href={whatsappLink}
-                target="_blank"
-                rel="noreferrer"
-                className="w-full md:w-auto inline-flex items-center justify-center gap-3 bg-gradient-to-r from-[#25D366] to-[#128C7E] text-white font-black py-5 px-10 rounded-full hover:scale-105 transition-all shadow-[0_0_30px_rgba(37,211,102,0.4)] text-lg"
-              >
-                <Sparkles className="w-6 h-6" /> Reclamar Mis Masajes Gratis
-              </a>
+              {forceWhatsapp ? (
+                <a 
+                  href={whatsappLink}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-full md:w-auto inline-flex items-center justify-center gap-3 bg-gradient-to-r from-[#25D366] to-[#128C7E] text-white font-black py-5 px-10 rounded-full hover:scale-105 transition-all shadow-[0_0_30px_rgba(37,211,102,0.4)] text-lg"
+                >
+                  <Sparkles className="w-6 h-6" /> Asesoría por WhatsApp
+                </a>
+              ) : (
+                <button
+                  onClick={() => window.open("/guia-masajes.pdf", "_blank")}
+                  className="w-full md:w-auto inline-flex items-center justify-center gap-3 bg-gradient-to-r from-[#D4AF37] to-[#F3E5AB] text-black font-black py-5 px-10 rounded-full hover:scale-105 transition-all shadow-[0_0_30px_rgba(212,175,55,0.4)] text-lg"
+                >
+                  <Droplets className="w-6 h-6" /> Descargar mi Guía de Regalo
+                </button>
+              )}
             </div>
           </div>
         )}
